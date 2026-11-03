@@ -1,0 +1,26 @@
+{
+  "passed": 20,
+  "checks": [
+    "Initial dashboard: 3 plans, 3 courses, explicit demo disclosure",
+    "Switching Plan B changes the course list and selected timetable",
+    "Calendar export: 6 recurring sessions with explicit demo titles and Hong Kong timezone",
+    "Dialog opens, closes with Escape, and returns focus",
+    "Reviewer scenario 1: generated 3 plans and 3 courses",
+    "Reviewer scenario 2: generated 3 plans and 3 courses",
+    "Reviewer scenario 3: generated 3 plans and 2 courses",
+    "Reviewer scenario 4: generated 3 plans and 3 courses",
+    "Reviewer scenario 5: generated 3 plans and 2 courses",
+    "Unsupported natural language shows a clear limitation",
+    "Chinese supported phrases update visible filters; Generate applies them",
+    "Impossible availability returns no plan; recovery restores valid plans",
+    "Catalog: search, empty state, domain filter and bookmarking work",
+    "Watchlist persists on reload; simulation updates seats and emits an in-app notification",
+    "Activity trail records simulated updates and shows exclusion reasons",
+    "Official source links use user-provided URLs, safe new tabs, SIS path and honest manual-access status",
+    "Course details disclose provenance; modal keyboard focus is trapped",
+    "Desktop 1440px: no page overflow or runtime errors",
+    "Mobile 390px: collapsed navigation, working menu, and no page overflow",
+    "No uncaught JavaScript exceptions during the desktop journey"
+  ],
+  "errors": []
+}
