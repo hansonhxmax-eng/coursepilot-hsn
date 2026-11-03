@@ -15,11 +15,11 @@
   margin-top: 2px;
 }
 .snapshot-note strong {
-  font-size: 13px;
+  font-size: 16px;
   font-weight: 600;
 }
 .snapshot-note p {
-  font-size: 11px;
+  font-size: 15px;
   line-height: 1.85;
   margin-top: 6px;
   color: #839672;
@@ -31,7 +31,7 @@
   gap: 5px;
   align-items: center;
   white-space: nowrap;
-  font-size: 10px;
+  font-size: 14px;
 }
 .real-stats {
   display: flex;
@@ -62,7 +62,7 @@
 }
 .real-stats span {
   display: block;
-  font-size: 9px;
+  font-size: 12px;
   color: #94a285;
   margin-top: 7px;
 }
@@ -78,7 +78,7 @@
   margin: 0;
   font-family: Georgia, serif;
   font-style: italic;
-  font-size: 12px;
+  font-size: 16px;
   line-height: 1.7;
 }
 .real-tabs {
@@ -92,7 +92,7 @@
   display: flex;
   align-items: center;
   gap: 7px;
-  font-size: 11px;
+  font-size: 15px;
   color: #8b9c79;
 }
 .real-tabs a:first-child {
@@ -117,7 +117,7 @@
   margin: 9px 0;
 }
 .real-heading p {
-  font-size: 11px;
+  font-size: 15px;
   line-height: 1.9;
   color: #95a285;
 }
@@ -131,7 +131,7 @@
   padding: 10px 12px;
   background: #f9fbf4;
   color: #718b59;
-  font-size: 10px;
+  font-size: 14px;
   white-space: nowrap;
 }
 .real-outline:hover {
@@ -147,11 +147,11 @@
   border: 1px solid var(--line);
   border-radius: 6px;
   background: white;
-  font-size: 11px;
+  font-size: 15px;
   color: #81936e;
 }
 .cc-filter {
-  font-size: 10px;
+  font-size: 14px;
   display: flex;
   align-items: center;
   gap: 6px;
@@ -165,7 +165,7 @@
   display: flex;
   justify-content: space-between;
   gap: 15px;
-  font-size: 9px;
+  font-size: 14px;
   color: #9da98f;
   margin: 15px 0;
   line-height: 1.7;
@@ -192,11 +192,11 @@
   border-radius: 4px;
   background: #eaf0e1;
   color: #7b9363;
-  font-size: 8px;
+  font-size: 11px;
   letter-spacing: 0.7px;
 }
 .real-cc {
-  font-size: 7px;
+  font-size: 10px;
   padding: 4px 5px;
   background: #eeebf7;
   border-radius: 4px;
@@ -204,7 +204,7 @@
 }
 .real-credits {
   margin-left: auto;
-  font-size: 8px;
+  font-size: 11px;
   color: #a9b199;
 }
 .real-course-title {
@@ -212,20 +212,21 @@
   padding: 0;
 }
 .real-course-title small {
-  font-size: 9px;
+  font-size: 12px;
   color: #90a07d;
   letter-spacing: 0.5px;
 }
 .real-course-title h3 {
   font-family: Georgia, serif;
-  font-size: 20px;
+  font-size: 22px;
   font-weight: 400;
   line-height: 1.3;
   margin: 9px 0 12px;
   color: #566f48;
 }
 .real-course > p {
-  font-size: 9px;
+  font-size: 15px;
+  line-height: 1.7;
   color: #9aa78b;
   margin-bottom: 19px;
 }
@@ -242,7 +243,7 @@
   display: flex;
   gap: 4px;
   align-items: center;
-  font-size: 8px;
+  font-size: 11px;
   color: #98a987;
 }
 .real-add {
@@ -265,7 +266,7 @@
   align-items: center;
   gap: 5px;
   color: #b19d72;
-  font-size: 8px;
+  font-size: 11px;
   margin: 13px -19px -19px;
   padding: 9px 15px;
   background: #f6f3e9;
@@ -283,7 +284,7 @@
   margin: 15px;
 }
 .real-empty p {
-  font-size: 11px;
+  font-size: 15px;
   margin-bottom: 15px;
 }
 .real-pagination {
@@ -293,7 +294,7 @@
   gap: 19px;
   margin: 25px 0 35px;
   color: #9aaa8b;
-  font-size: 10px;
+  font-size: 14px;
 }
 .real-pagination button {
   border: 1px solid #dde6d1;
@@ -328,7 +329,7 @@
   background: #e3ecd8;
   color: #6f8859;
   border-radius: 4px;
-  font-size: 11px;
+  font-size: 15px;
 }
 .real-basket button {
   display: flex;
@@ -336,7 +337,7 @@
   color: #92a47f;
 }
 .real-basket > p {
-  font-size: 11px;
+  font-size: 15px;
   color: #a0ac90;
   line-height: 1.8;
 }
@@ -355,7 +356,7 @@
   flex-wrap: wrap;
 }
 .real-component-locks strong {
-  font-size: 11px;
+  font-size: 15px;
   font-weight: 500;
   width: 85px;
   color: #78935f;
@@ -364,7 +365,7 @@
   display: flex;
   align-items: center;
   gap: 7px;
-  font-size: 9px;
+  font-size: 12px;
   color: #9fae90;
 }
 .real-component-locks select {
@@ -372,7 +373,7 @@
   border: 1px solid #e2e9d7;
   padding: 7px;
   border-radius: 4px;
-  font-size: 9px;
+  font-size: 12px;
   background: #fafcf6;
   color: #80996b;
 }
@@ -386,7 +387,7 @@
   display: flex;
   align-items: center;
   gap: 6px;
-  font-size: 10px;
+  font-size: 14px;
   color: #8b9e78;
 }
 .real-controls select {
@@ -394,7 +395,7 @@
   background: #f8faf3;
   padding: 7px;
   border-radius: 5px;
-  font-size: 10px;
+  font-size: 14px;
   color: #819768;
 }
 .real-days {
@@ -406,7 +407,7 @@
   padding: 9px 12px;
   border: 1px solid #e1e8d6;
   border-radius: 5px;
-  font-size: 9px;
+  font-size: 12px;
   color: #b0bba3;
 }
 .real-days button[aria-pressed="true"] {
@@ -427,7 +428,7 @@
   color: #ac9d75;
 }
 .unknown-controls strong {
-  font-size: 10px;
+  font-size: 14px;
   font-weight: 500;
   flex-basis: 100%;
 }
@@ -435,11 +436,11 @@
   display: flex;
   align-items: center;
   gap: 5px;
-  font-size: 9px;
+  font-size: 12px;
 }
 .unknown-controls small {
   flex-basis: 100%;
-  font-size: 9px;
+  font-size: 12px;
   line-height: 1.8;
 }
 .real-build-actions {
@@ -449,7 +450,7 @@
   flex-wrap: wrap;
 }
 .real-build-actions > span {
-  font-size: 9px;
+  font-size: 12px;
   color: #b29c67;
 }
 .real-message {
@@ -457,7 +458,7 @@
   border: 1px solid #dce6ce;
   background: #f0f5e7;
   border-radius: 5px;
-  font-size: 11px;
+  font-size: 15px;
   color: #8aa171;
   line-height: 1.8;
   margin-top: 18px;
@@ -481,20 +482,20 @@
 }
 .real-plan-tabs span {
   display: block;
-  font-size: 8px;
+  font-size: 11px;
   letter-spacing: 1px;
   color: #8fa37b;
 }
 .real-plan-tabs strong {
   display: block;
-  font-size: 20px;
+  font-size: 22px;
   font-family: Georgia, serif;
   font-weight: 400;
   color: #6f8a59;
   margin: 11px 0;
 }
 .real-plan-tabs small {
-  font-size: 8px;
+  font-size: 11px;
   color: #a4b194;
   line-height: 1.6;
   display: block;
@@ -510,10 +511,10 @@
 .real-blockers h3 {
   font-family: Georgia;
   font-weight: 400;
-  font-size: 22px;
+  font-size: 24px;
 }
 .real-blockers ul {
-  font-size: 11px;
+  font-size: 15px;
   line-height: 1.9;
   padding-left: 16px;
   margin-bottom: 0;
@@ -522,7 +523,7 @@
   display: flex;
   gap: 8px;
   align-items: flex-start;
-  font-size: 11px;
+  font-size: 15px;
   line-height: 1.8;
   color: #af8b55;
   padding: 15px;
@@ -538,14 +539,14 @@
   margin: 15px 0 20px;
 }
 .real-week-controls label {
-  font-size: 10px;
+  font-size: 14px;
   display: flex;
   align-items: center;
   gap: 12px;
   color: #93a381;
 }
 .real-week-controls input {
-  font-size: 10px;
+  font-size: 14px;
   padding: 8px;
   border: 1px solid #dce6ce;
   border-radius: 5px;
@@ -567,12 +568,12 @@
   grid-template-columns: 40px repeat(7, 1fr);
   text-align: center;
   color: #9bae88;
-  font-size: 9px;
+  font-size: 12px;
   padding-bottom: 18px;
 }
 .real-calendar-head span {
   text-align: left;
-  font-size: 7px;
+  font-size: 10px;
 }
 .real-calendar-head strong {
   font-weight: 500;
@@ -588,7 +589,7 @@
 .real-time-axis > span {
   position: absolute;
   transform: translateY(-50%);
-  font-size: 8px;
+  font-size: 11px;
   color: #b0bba1;
 }
 .real-day-column {
@@ -615,11 +616,11 @@
 }
 .real-calendar-event strong {
   display: block;
-  font-size: 8px;
+  font-size: 11px;
   white-space: nowrap;
 }
 .real-calendar-event span {
-  font-size: 6px;
+  font-size: 9px;
   display: block;
   line-height: 1.5;
   margin-top: 2px;
@@ -643,11 +644,11 @@
 }
 .real-plan-details strong {
   font-weight: 500;
-  font-size: 11px;
+  font-size: 15px;
   color: #82996b;
 }
 .real-plan-details p {
-  font-size: 9px;
+  font-size: 12px;
   line-height: 1.9;
   color: #a1af91;
   display: flex;
@@ -668,7 +669,7 @@
 .real-verification {
   display: flex;
   gap: 10px;
-  font-size: 10px;
+  font-size: 14px;
   line-height: 1.9;
   color: #9daf8b;
   margin-top: 20px;
@@ -684,7 +685,7 @@
   color: #849e70;
 }
 .real-search-info {
-  font-size: 9px;
+  font-size: 12px;
   color: #afbaa2;
   margin-top: 17px;
 }
@@ -714,29 +715,29 @@
   place-items: center;
   flex-shrink: 0;
   font-family: Georgia;
-  font-size: 11px;
+  font-size: 15px;
   background: #eef4e4;
   border: 1px solid #e0e9d3;
   color: #9db18a;
   border-radius: 50%;
 }
 .real-review-steps strong {
-  font-size: 11px;
+  font-size: 15px;
   font-weight: 500;
   color: #849d6d;
 }
 .real-review-steps p {
-  font-size: 10px;
+  font-size: 14px;
   line-height: 1.85;
   color: #a3b093;
   margin: 9px 0 14px;
 }
 .real-review-steps .real-outline {
-  font-size: 9px;
+  font-size: 12px;
   padding: 9px;
 }
 .real-review-count {
-  font-size: 10px;
+  font-size: 14px;
   color: #a0b18e;
 }
 .review-evidence {
@@ -745,17 +746,17 @@
   margin-top: 15px;
 }
 .review-evidence summary {
-  font-size: 11px;
+  font-size: 15px;
   color: #859e6e;
   cursor: pointer;
 }
 .review-evidence summary span {
-  font-size: 9px;
+  font-size: 12px;
   margin-left: 15px;
   color: #a6b497;
 }
 .review-evidence p {
-  font-size: 9px;
+  font-size: 12px;
   line-height: 1.9;
   color: #9eaf8c;
   margin-top: 15px;
@@ -769,7 +770,7 @@
 .real-modal-review pre {
   white-space: pre-wrap;
   overflow-wrap: anywhere;
-  font: 11px/1.9 inherit;
+  font: 15px/1.9 inherit;
   background: #f2f6e9;
   border: 1px solid #e1ead4;
   border-radius: 6px;
@@ -786,7 +787,7 @@
   background: #f4f8ed;
 }
 .real-source-manifest summary {
-  font-size: 11px;
+  font-size: 15px;
   cursor: pointer;
   color: #8ca477;
   list-style: none;
@@ -795,7 +796,7 @@
   align-items: center;
 }
 .real-source-manifest > p {
-  font-size: 10px;
+  font-size: 14px;
   line-height: 1.9;
   color: #a0b08d;
   margin: 17px 0;
@@ -813,11 +814,11 @@
   background: #fafcf6;
   padding: 11px;
   border-radius: 5px;
-  font-size: 10px;
+  font-size: 14px;
   color: #8fa67a;
 }
 .real-source-manifest a > span {
-  font-size: 8px;
+  font-size: 11px;
   color: #afbd9f;
 }
 .real-source-manifest a > svg {
@@ -827,7 +828,7 @@
   width: 820px;
 }
 .real-modal-notice {
-  font-size: 11px;
+  font-size: 15px;
   line-height: 1.9;
   color: #a5b393;
   margin: 15px 0 20px;
@@ -839,7 +840,7 @@
   margin-bottom: 23px;
 }
 .real-modal-actions .primary {
-  font-size: 10px;
+  font-size: 14px;
 }
 .real-section-records {
   display: flex;
@@ -859,11 +860,11 @@
 }
 .real-section-records article > div strong {
   font-weight: 500;
-  font-size: 14px;
+  font-size: 17px;
   color: #809d65;
 }
 .real-section-records article > div > span {
-  font-size: 9px;
+  font-size: 12px;
   color: #adbc9b;
 }
 .real-section-records article > div > a {
@@ -873,7 +874,7 @@
   color: #98b080;
 }
 .real-section-records p {
-  font-size: 10px;
+  font-size: 14px;
   line-height: 1.9;
   color: #a5b594;
   margin-top: 9px;
@@ -882,14 +883,14 @@
   color: #859e6e;
 }
 .real-section-records small {
-  font-size: 9px;
+  font-size: 12px;
   color: #b7a071;
   line-height: 1.8;
   display: block;
   margin-top: 12px;
 }
 .real-section-records details {
-  font-size: 9px;
+  font-size: 12px;
   color: #b0bda1;
   margin-top: 14px;
 }
@@ -899,25 +900,25 @@
 .real-section-records pre {
   white-space: pre-wrap;
   overflow-wrap: anywhere;
-  font: 10px/1.8 monospace;
+  font: 14px/1.8 monospace;
   background: #f0f5e6;
   padding: 10px;
   border-radius: 5px;
 }
 .real-review-missing,
 .real-modal-review > p {
-  font-size: 10px;
+  font-size: 14px;
   line-height: 1.9;
   color: #adbb9c;
   margin-top: 20px;
 }
 .real-modal-review h3 {
   color: #92a97c;
-  font-size: 13px;
+  font-size: 16px;
 }
 .real-modal-review pre {
   font-family: inherit;
-  font-size: 11px;
+  font-size: 15px;
   line-height: 1.9;
 }
 @media (max-width: 1200px) {
@@ -940,7 +941,7 @@
     gap: 8px;
   }
   .real-review-steps .real-outline {
-    font-size: 8px;
+    font-size: 11px;
   }
   .real-source-manifest > div {
     grid-template-columns: repeat(2, 1fr);
@@ -958,7 +959,7 @@
     flex: 1;
   }
   .cc-filter {
-    font-size: 9px;
+    font-size: 12px;
   }
 }
 @media (max-width: 800px) {
@@ -1334,7 +1335,7 @@
   background: #edf4e2;
   margin-bottom: 16px;
   color: #849f6b;
-  font-size: 10px;
+  font-size: 14px;
 }
 .real-selection-summary > span {
   display: flex;
@@ -1344,7 +1345,7 @@
   line-height: 1.8;
 }
 .real-selection-summary small {
-  font-size: 9px;
+  font-size: 12px;
   margin-left: 7px;
   color: #a3b590;
 }
@@ -1353,7 +1354,7 @@
   align-items: center;
   gap: 6px;
   white-space: nowrap;
-  font-size: 10px;
+  font-size: 14px;
 }
 @media (max-width: 620px) {
   .real-selection-summary {
