@@ -1,7 +1,7 @@
 @echo off
 setlocal
 cd /d "%~dp0"
-echo CoursePilot 2026.11.03.4-auto - full course list with automatic resume
+echo CoursePilot 2026.11.03.5-auto-wait - full course list with automatic resume
 echo Log in and open any listed course. A successful test starts the full batch automatically.
 echo No terminal input is needed during automatic collection.
  echo Your password is entered ONLY in the official website browser window.

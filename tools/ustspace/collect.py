@@ -9,7 +9,7 @@ from urllib.parse import urlparse,urlunparse,parse_qsl,urlencode,urljoin,unquote
 from urllib.robotparser import RobotFileParser
 
 KIND='ustspace-visible-snapshots'
-VERSION='2026.11.03.4-auto'
+VERSION='2026.11.03.5-auto-wait'
 CODE=re.compile(r'^[A-Z]{4}\d{4}[A-Z]?$')
 REDACT_EMAIL=re.compile(r'(?<![A-Z0-9._%+-])[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}',re.I)
 class AccessStop(Exception):pass
@@ -78,7 +78,7 @@ def visible_text(page,selector,code):
   # When the site has no semantic main element, keep only the part after the
   # requested course heading, rather than the account/navigation header.
   raw=page.locator('body').inner_text()
-  match=re.search(re.escape(code[:4])+r'\s*'+re.escape(code[4:]),raw,re.I)
+  match=re.search(r'(?<![A-Z0-9])'+re.escape(code[:4])+r'[\s/-]*'+re.escape(code[4:])+r'(?![A-Z0-9])',raw,re.I)
   if not match:raise CourseUnavailable('Requested course code was not visible on this page.')
   raw=raw[match.start():]
  else:raw=loc.inner_text()
@@ -116,7 +116,7 @@ def detected_course(page,allowed,selector):
 
 def wait_for_course(context,codes,args,poll_ms=500,settle_ms=1000):
  from playwright.sync_api import Error as BrowserError
- allowed=set(codes);candidate=None;since=0
+ allowed=set(codes);candidate=None;since=0;last_report=time.monotonic()
  print('AUTO: Log in, then open ANY course from the supplied list. No terminal input is needed.',flush=True)
  while True:
   pages=[page for page in context.pages if not page.is_closed()]
@@ -126,7 +126,7 @@ def wait_for_course(context,codes,args,poll_ms=500,settle_ms=1000):
    try:
     code=detected_course(page,allowed,args.content_selector)
     if code:found=(page,code,page.url);break
-   except (BrowserError,AccessStop):
+   except (BrowserError,AccessStop,CourseUnavailable):
     # Login redirects, loading pages and challenges are expected while the
     # owner signs in. Collection has not started yet; leave the browser alone.
     continue
@@ -135,6 +135,9 @@ def wait_for_course(context,codes,args,poll_ms=500,settle_ms=1000):
    page,code,_=candidate
    print(f'TEST: Detected {code}; checking visible course content.',flush=True)
    return page,code
+  if time.monotonic()-last_report>=15:
+   print('AUTO: Still waiting for readable course content. Finish logging in and open a listed course; keep the browser open.',flush=True)
+   last_report=time.monotonic()
   try:pages[-1].wait_for_timeout(poll_ms)
   except BrowserError:pass
 
@@ -146,16 +149,25 @@ def read_robots(context):
  return robots
 
 def start_collection(context,all_codes,codes,args,rows,excluded,output):
- page,anchor=wait_for_course(context,all_codes,args)
- def observe(response):
-  if official_url(response.url) and response.status in (401,403,429) and response.request.resource_type in ('document','xhr','fetch'):
-   page._collector_blocked_status=response.status
- page.on('response',observe)
- robots=read_robots(context)
- if not robots.can_fetch('CoursePilotResearchSnapshot',page.url):raise AccessStop('robots.txt disallows the selected course; collection stopped.')
- template=args.url_template or (None if args.manual else derive_template(page.url,anchor))
- if template and not ('{course}' in template or '{subject}' in template and '{number}' in template):raise ValueError('URL template must contain {course}, or both {subject} and {number}.')
- record=collect_current(page,anchor,args)
+ robots=None
+ while True:
+  page,anchor=wait_for_course(context,all_codes,args)
+  def observe(response):
+   if official_url(response.url) and response.status in (401,403,429) and response.request.resource_type in ('document','xhr','fetch'):
+    page._collector_blocked_status=response.status
+  page.on('response',observe)
+  if robots is None:robots=read_robots(context)
+  if not robots.can_fetch('CoursePilotResearchSnapshot',page.url):raise AccessStop('robots.txt disallows the selected course; collection stopped.')
+  template=args.url_template or (None if args.manual else derive_template(page.url,anchor))
+  if template and not ('{course}' in template or '{subject}' in template and '{number}' in template):raise ValueError('URL template must contain {course}, or both {subject} and {number}.')
+  try:record=collect_current(page,anchor,args)
+  except CourseUnavailable:
+   # The user or the app may change pages after detection but before the
+   # first read. Nothing has been committed and the batch has not started.
+   page.remove_listener('response',observe)
+   print('TEST WAIT: Course content changed or is still loading; waiting for a readable course page.',flush=True)
+   continue
+  break
  if anchor in codes:
   rows[:]=[r for r in rows if r['courseCode']!=anchor];rows.append(record)
   save(output,rows,excluded,None)

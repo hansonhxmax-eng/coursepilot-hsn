@@ -12,7 +12,7 @@ args=SimpleNamespace(content_selector='main',max_pages=0,max_scrolls=0,delay=.00
 checks=[]
 def passed(name):checks.append(name);print('PASS:',name,flush=True)
 
-def routes(context,deny_robots=False,deny_course=None):
+def routes(context,deny_robots=False,deny_course=None,loading_course=False):
  # Browser routes do not intercept APIRequestContext; stub its one robots
  # request separately so this workflow test cannot contact the real site.
  def robots(url,**kwargs):
@@ -33,6 +33,11 @@ def routes(context,deny_robots=False,deny_course=None):
    if code==deny_course:route.fulfill(status=429,content_type='text/html',body='<h1>Rate limit</h1>');return
    body='<h1>Course not found</h1>' if code=='COMP1021' else f'<h1>{code}</h1><p>TEST FIXTURE visible course page evidence.</p>'
    body='<main>'+body+'</main>'
+   if loading_course and code=='MATH1013':
+    # The URL already names a course while its SPA body is still loading.
+    # This previously raised CourseUnavailable out of the login wait loop.
+    body=body.removeprefix('<main>').removesuffix('</main>').replace('<h1>MATH1013</h1>','<h1>MATH / 1013</h1>')
+    body="<div>Loading course page...</div><script>setTimeout(()=>{document.body.innerHTML="+json.dumps(body)+"},1500)</script>"
   route.fulfill(status=200,content_type='text/html',body='<title>Course fixture</title>'+body)
  context.route('https://ust.space/**',respond)
 
@@ -43,7 +48,7 @@ with sync_playwright() as p:
  with tempfile.TemporaryDirectory() as t, patch('builtins.input',side_effect=AssertionError('Automatic mode must not request terminal input')), patch.object(m.time,'sleep'):
   # A simulated login and a course click open a new tab. Start on the third
   # listed course; the first course must still be navigated and captured.
-  context=browser.new_context();routes(context)
+  context=browser.new_context();routes(context,loading_course=True)
   page=context.new_page();page.goto('https://ust.space/login')
   output=Path(t)/'all.json';rows=[]
   m.start_collection(context,codes,codes,args,rows,[],output)
@@ -54,7 +59,7 @@ with sync_playwright() as p:
   assert next(r for r in saved if r['courseCode']=='ACCT2010')['text'].startswith('ACCT2010')
   assert next(r for r in saved if r['courseCode']=='COMP1021')['status']=='unavailable'
   assert saved[-1]['courseCode']=='FINA1000' and saved[-1]['status']=='captured'
-  passed('Login and arbitrary course click in a new tab automatically test and finish the entire list, without stdin')
+  passed('Login, delayed course content and a new tab automatically reach the full batch without stdin')
   context.close()
 
   context=browser.new_context();routes(context)
@@ -64,6 +69,24 @@ with sync_playwright() as p:
   m.start_collection(context,codes,pending,args,rows,[],output)
   assert next(r for r in rows if r['courseCode']=='MATH1013')==old and len(rows)==4
   passed('Already captured course can be used as the automatic test; its saved evidence remains unchanged')
+  context.close()
+
+  context=browser.new_context();routes(context)
+  page=context.new_page();page.goto('https://ust.space/review/MATH1013')
+  rows=[];race_output=Path(t)/'race.json';original_collect=m.collect_current
+  calls=[]
+  def course_changes_before_first_read(page,code,args):
+   calls.append(code)
+   if len(calls)==1:
+    assert not rows and not race_output.exists()
+    raise m.CourseUnavailable('Requested course code was not visible on this page.')
+   return original_collect(page,code,args)
+  with patch.object(m,'collect_current',side_effect=course_changes_before_first_read):
+   m.start_collection(context,codes,codes,args,rows,[],race_output)
+  assert calls[:2]==['MATH1013','MATH1013']
+  assert len(rows)==len(codes) and len({r['courseCode'] for r in rows})==len(codes)
+  assert json.loads(race_output.read_text())['courses']==rows
+  passed('A disappearing course at the first test read returns to waiting, then completes the batch without losing records')
   context.close()
 
   context=browser.new_context();routes(context,deny_robots=True)
