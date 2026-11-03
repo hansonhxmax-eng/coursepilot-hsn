@@ -1,0 +1,1734 @@
+{
+  "updatedAt": "2026-11-03T14:30:09.353790+00:00",
+  "processedCourses": 544,
+  "stats": {
+    "courses": 172,
+    "reviews": 14740,
+    "headers": 14781,
+    "discardedBlocks": 38,
+    "duplicateBlocks": 3,
+    "ratingCourses": 172
+  },
+  "courses": {
+    "COMP1023": {
+      "reviewCount": 121,
+      "ratings": {
+        "content": "B+",
+        "teaching": "A-",
+        "grading": "B+",
+        "workload": "B-"
+      },
+      "ratingCount": 121
+    },
+    "ACCT2010": {
+      "reviewCount": 1503,
+      "ratings": {
+        "content": "B+",
+        "teaching": "B",
+        "grading": "B",
+        "workload": "B"
+      },
+      "ratingCount": 1538
+    },
+    "ACCT3010": {
+      "reviewCount": 32,
+      "ratings": {
+        "content": "B+",
+        "teaching": "C+",
+        "grading": "B",
+        "workload": "B"
+      },
+      "ratingCount": 37
+    },
+    "ACCT3610": {
+      "reviewCount": 71,
+      "ratings": {
+        "content": "B+",
+        "teaching": "B+",
+        "grading": "B+",
+        "workload": "B+"
+      },
+      "ratingCount": 81
+    },
+    "ACCT3880": {
+      "reviewCount": 6,
+      "ratings": {
+        "content": "B+",
+        "teaching": "B-",
+        "grading": "A-",
+        "workload": "B+"
+      },
+      "ratingCount": 8
+    },
+    "ACCT4010": {
+      "reviewCount": 21,
+      "ratings": {
+        "content": "B+",
+        "teaching": "B",
+        "grading": "A-",
+        "workload": "B+"
+      },
+      "ratingCount": 22
+    },
+    "ACCT4510": {
+      "reviewCount": 14,
+      "ratings": {
+        "content": "C+",
+        "teaching": "C",
+        "grading": "B-",
+        "workload": "C+"
+      },
+      "ratingCount": 23
+    },
+    "ACCT4710": {
+      "reviewCount": 11,
+      "ratings": {
+        "content": "A-",
+        "teaching": "A-",
+        "grading": "A-",
+        "workload": "B"
+      },
+      "ratingCount": 13
+    },
+    "ACCT5160": {
+      "reviewCount": 1,
+      "ratings": {
+        "content": "B",
+        "teaching": "B",
+        "grading": "B",
+        "workload": "B"
+      },
+      "ratingCount": 1
+    },
+    "FINA1303": {
+      "reviewCount": 83,
+      "ratings": {
+        "content": "B",
+        "teaching": "B+",
+        "grading": "B",
+        "workload": "B"
+      },
+      "ratingCount": 91
+    },
+    "FINA2203": {
+      "reviewCount": 84,
+      "ratings": {
+        "content": "B+",
+        "teaching": "B",
+        "grading": "B-",
+        "workload": "B-"
+      },
+      "ratingCount": 85
+    },
+    "FINA2303": {
+      "reviewCount": 533,
+      "ratings": {
+        "content": "B",
+        "teaching": "B-",
+        "grading": "B-",
+        "workload": "C+"
+      },
+      "ratingCount": 535
+    },
+    "FINA3103": {
+      "reviewCount": 91,
+      "ratings": {
+        "content": "B+",
+        "teaching": "B-",
+        "grading": "B-",
+        "workload": "B"
+      },
+      "ratingCount": 92
+    },
+    "FINA3203": {
+      "reviewCount": 47,
+      "ratings": {
+        "content": "B+",
+        "teaching": "B",
+        "grading": "B",
+        "workload": "B-"
+      },
+      "ratingCount": 50
+    },
+    "FINA3303": {
+      "reviewCount": 24,
+      "ratings": {
+        "content": "B+",
+        "teaching": "B-",
+        "grading": "B-",
+        "workload": "B"
+      },
+      "ratingCount": 31
+    },
+    "FINA4103": {
+      "reviewCount": 8,
+      "ratings": {
+        "content": "B-",
+        "teaching": "B-",
+        "grading": "B+",
+        "workload": "A-"
+      },
+      "ratingCount": 9
+    },
+    "FINA4803": {
+      "reviewCount": 1,
+      "ratings": {
+        "content": "D",
+        "teaching": "C",
+        "grading": "C",
+        "workload": "A"
+      },
+      "ratingCount": 1
+    },
+    "FINA5120": {
+      "reviewCount": 2,
+      "ratings": {
+        "content": "B-",
+        "teaching": "B",
+        "grading": "C+",
+        "workload": "C+"
+      },
+      "ratingCount": 3
+    },
+    "MGMT1110": {
+      "reviewCount": 71,
+      "ratings": {
+        "content": "B+",
+        "teaching": "B+",
+        "grading": "B+",
+        "workload": "B+"
+      },
+      "ratingCount": 73
+    },
+    "MGMT1130": {
+      "reviewCount": 20,
+      "ratings": {
+        "content": "A-",
+        "teaching": "A-",
+        "grading": "B+",
+        "workload": "A-"
+      },
+      "ratingCount": 21
+    },
+    "MGMT2010": {
+      "reviewCount": 398,
+      "ratings": {
+        "content": "B-",
+        "teaching": "B",
+        "grading": "B-",
+        "workload": "C+"
+      },
+      "ratingCount": 403
+    },
+    "MGMT2110": {
+      "reviewCount": 318,
+      "ratings": {
+        "content": "B+",
+        "teaching": "B+",
+        "grading": "B+",
+        "workload": "B+"
+      },
+      "ratingCount": 325
+    },
+    "MGMT2130": {
+      "reviewCount": 115,
+      "ratings": {
+        "content": "B-",
+        "teaching": "B+",
+        "grading": "B-",
+        "workload": "B-"
+      },
+      "ratingCount": 121
+    },
+    "MGMT3110": {
+      "reviewCount": 25,
+      "ratings": {
+        "content": "B+",
+        "teaching": "B",
+        "grading": "B+",
+        "workload": "B"
+      },
+      "ratingCount": 28
+    },
+    "MGMT3120": {
+      "reviewCount": 17,
+      "ratings": {
+        "content": "B+",
+        "teaching": "B+",
+        "grading": "B+",
+        "workload": "B+"
+      },
+      "ratingCount": 23
+    },
+    "MGMT3140": {
+      "reviewCount": 49,
+      "ratings": {
+        "content": "A-",
+        "teaching": "A-",
+        "grading": "B+",
+        "workload": "B+"
+      },
+      "ratingCount": 76
+    },
+    "MGMT4210": {
+      "reviewCount": 39,
+      "ratings": {
+        "content": "B+",
+        "teaching": "B+",
+        "grading": "B+",
+        "workload": "B-"
+      },
+      "ratingCount": 55
+    },
+    "MGMT4220": {
+      "reviewCount": 4,
+      "ratings": {
+        "content": "B-",
+        "teaching": "C+",
+        "grading": "C+",
+        "workload": "C-"
+      },
+      "ratingCount": 27
+    },
+    "ISOM1380": {
+      "reviewCount": 57,
+      "ratings": {
+        "content": "B+",
+        "teaching": "A-",
+        "grading": "B",
+        "workload": "B+"
+      },
+      "ratingCount": 87
+    },
+    "ISOM1500": {
+      "reviewCount": 5,
+      "ratings": {
+        "content": "B+",
+        "teaching": "B+",
+        "grading": "B+",
+        "workload": "B"
+      },
+      "ratingCount": 31
+    },
+    "ISOM2010": {
+      "reviewCount": 384,
+      "ratings": {
+        "content": "B-",
+        "teaching": "B-",
+        "grading": "B",
+        "workload": "B"
+      },
+      "ratingCount": 390
+    },
+    "ISOM2020": {
+      "reviewCount": 108,
+      "ratings": {
+        "content": "B",
+        "teaching": "B+",
+        "grading": "B-",
+        "workload": "B-"
+      },
+      "ratingCount": 109
+    },
+    "ISOM2500": {
+      "reviewCount": 742,
+      "ratings": {
+        "content": "B",
+        "teaching": "B-",
+        "grading": "B",
+        "workload": "B+"
+      },
+      "ratingCount": 744
+    },
+    "ISOM2600": {
+      "reviewCount": 123,
+      "ratings": {
+        "content": "C+",
+        "teaching": "B-",
+        "grading": "B-",
+        "workload": "B-"
+      },
+      "ratingCount": 139
+    },
+    "ISOM2700": {
+      "reviewCount": 416,
+      "ratings": {
+        "content": "B+",
+        "teaching": "A-",
+        "grading": "B+",
+        "workload": "B+"
+      },
+      "ratingCount": 421
+    },
+    "ISOM3180": {
+      "reviewCount": 32,
+      "ratings": {
+        "content": "A-",
+        "teaching": "A-",
+        "grading": "B-",
+        "workload": "A-"
+      },
+      "ratingCount": 38
+    },
+    "ISOM3210": {
+      "reviewCount": 27,
+      "ratings": {
+        "content": "B+",
+        "teaching": "A-",
+        "grading": "B",
+        "workload": "B"
+      },
+      "ratingCount": 28
+    },
+    "ISOM3230": {
+      "reviewCount": 37,
+      "ratings": {
+        "content": "B-",
+        "teaching": "C+",
+        "grading": "C+",
+        "workload": "B-"
+      },
+      "ratingCount": 39
+    },
+    "ISOM3260": {
+      "reviewCount": 18,
+      "ratings": {
+        "content": "B+",
+        "teaching": "B+",
+        "grading": "B",
+        "workload": "D+"
+      },
+      "ratingCount": 19
+    },
+    "ISOM3310": {
+      "reviewCount": 14,
+      "ratings": {
+        "content": "B+",
+        "teaching": "C+",
+        "grading": "B",
+        "workload": "C+"
+      },
+      "ratingCount": 21
+    },
+    "ISOM3320": {
+      "reviewCount": 1,
+      "ratings": {
+        "content": "B+",
+        "teaching": "B+",
+        "grading": "C+",
+        "workload": "C+"
+      },
+      "ratingCount": 9
+    },
+    "ISOM3360": {
+      "reviewCount": 45,
+      "ratings": {
+        "content": "B+",
+        "teaching": "B+",
+        "grading": "B",
+        "workload": "B"
+      },
+      "ratingCount": 47
+    },
+    "ISOM3400": {
+      "reviewCount": 59,
+      "ratings": {
+        "content": "B",
+        "teaching": "B-",
+        "grading": "B",
+        "workload": "B-"
+      },
+      "ratingCount": 62
+    },
+    "ISOM3540": {
+      "reviewCount": 15,
+      "ratings": {
+        "content": "B-",
+        "teaching": "B-",
+        "grading": "B-",
+        "workload": "C+"
+      },
+      "ratingCount": 18
+    },
+    "ISOM3710": {
+      "reviewCount": 43,
+      "ratings": {
+        "content": "A-",
+        "teaching": "B",
+        "grading": "B+",
+        "workload": "A-"
+      },
+      "ratingCount": 47
+    },
+    "ISOM3760": {
+      "reviewCount": 13,
+      "ratings": {
+        "content": "B-",
+        "teaching": "C",
+        "grading": "B+",
+        "workload": "B-"
+      },
+      "ratingCount": 14
+    },
+    "ISOM3770": {
+      "reviewCount": 18,
+      "ratings": {
+        "content": "A-",
+        "teaching": "A-",
+        "grading": "A-",
+        "workload": "A-"
+      },
+      "ratingCount": 26
+    },
+    "ISOM4100": {
+      "reviewCount": 16,
+      "ratings": {
+        "content": "B-",
+        "teaching": "C+",
+        "grading": "B-",
+        "workload": "B+"
+      },
+      "ratingCount": 24
+    },
+    "ISOM4300": {
+      "reviewCount": 17,
+      "ratings": {
+        "content": "B",
+        "teaching": "B+",
+        "grading": "B-",
+        "workload": "A-"
+      },
+      "ratingCount": 21
+    },
+    "ISOM4720": {
+      "reviewCount": 0,
+      "ratings": {
+        "content": "A",
+        "teaching": "A",
+        "grading": "A",
+        "workload": "A"
+      },
+      "ratingCount": 1
+    },
+    "ISOM4750": {
+      "reviewCount": 14,
+      "ratings": {
+        "content": "B+",
+        "teaching": "A-",
+        "grading": "A-",
+        "workload": "B+"
+      },
+      "ratingCount": 16
+    },
+    "ISOM4780": {
+      "reviewCount": 0,
+      "ratings": {
+        "content": "B+",
+        "teaching": "B+",
+        "grading": "B+",
+        "workload": "B+"
+      },
+      "ratingCount": 8
+    },
+    "ISOM5100": {
+      "reviewCount": 1,
+      "ratings": {
+        "content": "A",
+        "teaching": "A",
+        "grading": "A-",
+        "workload": "C+"
+      },
+      "ratingCount": 3
+    },
+    "ECON1220": {
+      "reviewCount": 2,
+      "ratings": {
+        "content": "A-",
+        "teaching": "B+",
+        "grading": "B+",
+        "workload": "B"
+      },
+      "ratingCount": 17
+    },
+    "ECON2103": {
+      "reviewCount": 274,
+      "ratings": {
+        "content": "B+",
+        "teaching": "B+",
+        "grading": "B",
+        "workload": "B+"
+      },
+      "ratingCount": 277
+    },
+    "ECON2113": {
+      "reviewCount": 367,
+      "ratings": {
+        "content": "B+",
+        "teaching": "B",
+        "grading": "B+",
+        "workload": "B+"
+      },
+      "ratingCount": 374
+    },
+    "ECON3014": {
+      "reviewCount": 6,
+      "ratings": {
+        "content": "B+",
+        "teaching": "A-",
+        "grading": "B+",
+        "workload": "B+"
+      },
+      "ratingCount": 36
+    },
+    "ECON3024": {
+      "reviewCount": 16,
+      "ratings": {
+        "content": "C+",
+        "teaching": "C+",
+        "grading": "B-",
+        "workload": "B-"
+      },
+      "ratingCount": 17
+    },
+    "ECON3133": {
+      "reviewCount": 23,
+      "ratings": {
+        "content": "B+",
+        "teaching": "B+",
+        "grading": "C+",
+        "workload": "B"
+      },
+      "ratingCount": 24
+    },
+    "ECON3143": {
+      "reviewCount": 17,
+      "ratings": {
+        "content": "B",
+        "teaching": "C+",
+        "grading": "B",
+        "workload": "B-"
+      },
+      "ratingCount": 19
+    },
+    "ECON3334": {
+      "reviewCount": 48,
+      "ratings": {
+        "content": "B-",
+        "teaching": "B",
+        "grading": "B+",
+        "workload": "B+"
+      },
+      "ratingCount": 61
+    },
+    "ECON3800": {
+      "reviewCount": 1,
+      "ratings": {
+        "content": "A",
+        "teaching": "A",
+        "grading": "A",
+        "workload": "D"
+      },
+      "ratingCount": 1
+    },
+    "ECON4124": {
+      "reviewCount": 12,
+      "ratings": {
+        "content": "B",
+        "teaching": "B-",
+        "grading": "B-",
+        "workload": "B-"
+      },
+      "ratingCount": 17
+    },
+    "ECON4364": {
+      "reviewCount": 7,
+      "ratings": {
+        "content": "B+",
+        "teaching": "B",
+        "grading": "B-",
+        "workload": "C+"
+      },
+      "ratingCount": 12
+    },
+    "ECON4800": {
+      "reviewCount": 1,
+      "ratings": {
+        "content": "A",
+        "teaching": "A",
+        "grading": "A",
+        "workload": "E"
+      },
+      "ratingCount": 1
+    },
+    "COMP1021": {
+      "reviewCount": 1269,
+      "ratings": {
+        "content": "B+",
+        "teaching": "A-",
+        "grading": "B+",
+        "workload": "B+"
+      },
+      "ratingCount": 1277
+    },
+    "COMP1028": {
+      "reviewCount": 1,
+      "ratings": {
+        "content": "A-",
+        "teaching": "B+",
+        "grading": "A-",
+        "workload": "B"
+      },
+      "ratingCount": 4
+    },
+    "COMP1029C": {
+      "reviewCount": 34,
+      "ratings": {
+        "content": "B+",
+        "teaching": "A-",
+        "grading": "A-",
+        "workload": "A-"
+      },
+      "ratingCount": 37
+    },
+    "COMP1029P": {
+      "reviewCount": 7,
+      "ratings": {
+        "content": "A-",
+        "teaching": "B+",
+        "grading": "A-",
+        "workload": "A-"
+      },
+      "ratingCount": 19
+    },
+    "COMP1029V": {
+      "reviewCount": 20,
+      "ratings": {
+        "content": "B+",
+        "teaching": "B+",
+        "grading": "A-",
+        "workload": "B+"
+      },
+      "ratingCount": 21
+    },
+    "COMP1943": {
+      "reviewCount": 20,
+      "ratings": {
+        "content": "B+",
+        "teaching": "B",
+        "grading": "B+",
+        "workload": "B-"
+      },
+      "ratingCount": 23
+    },
+    "COMP1944": {
+      "reviewCount": 31,
+      "ratings": {
+        "content": "C+",
+        "teaching": "C+",
+        "grading": "B-",
+        "workload": "C+"
+      },
+      "ratingCount": 31
+    },
+    "COMP2011": {
+      "reviewCount": 323,
+      "ratings": {
+        "content": "B+",
+        "teaching": "B+",
+        "grading": "B-",
+        "workload": "C+"
+      },
+      "ratingCount": 324
+    },
+    "COMP2012": {
+      "reviewCount": 113,
+      "ratings": {
+        "content": "B+",
+        "teaching": "A-",
+        "grading": "B-",
+        "workload": "C+"
+      },
+      "ratingCount": 117
+    },
+    "COMP2012H": {
+      "reviewCount": 76,
+      "ratings": {
+        "content": "A-",
+        "teaching": "A-",
+        "grading": "A-",
+        "workload": "D+"
+      },
+      "ratingCount": 77
+    },
+    "COMP2211": {
+      "reviewCount": 68,
+      "ratings": {
+        "content": "A-",
+        "teaching": "A-",
+        "grading": "B+",
+        "workload": "B"
+      },
+      "ratingCount": 69
+    },
+    "COMP2611": {
+      "reviewCount": 63,
+      "ratings": {
+        "content": "B+",
+        "teaching": "B",
+        "grading": "B-",
+        "workload": "B+"
+      },
+      "ratingCount": 64
+    },
+    "COMP2633": {
+      "reviewCount": 11,
+      "ratings": {
+        "content": "A-",
+        "teaching": "B+",
+        "grading": "A-",
+        "workload": "D-"
+      },
+      "ratingCount": 12
+    },
+    "COMP2711": {
+      "reviewCount": 180,
+      "ratings": {
+        "content": "B+",
+        "teaching": "B+",
+        "grading": "B",
+        "workload": "B"
+      },
+      "ratingCount": 183
+    },
+    "COMP2711H": {
+      "reviewCount": 66,
+      "ratings": {
+        "content": "A-",
+        "teaching": "A-",
+        "grading": "A-",
+        "workload": "B-"
+      },
+      "ratingCount": 70
+    },
+    "COMP3111": {
+      "reviewCount": 62,
+      "ratings": {
+        "content": "C",
+        "teaching": "C+",
+        "grading": "C+",
+        "workload": "C+"
+      },
+      "ratingCount": 64
+    },
+    "COMP3111H": {
+      "reviewCount": 4,
+      "ratings": {
+        "content": "C-",
+        "teaching": "B-",
+        "grading": "B-",
+        "workload": "B-"
+      },
+      "ratingCount": 9
+    },
+    "COMP3211": {
+      "reviewCount": 21,
+      "ratings": {
+        "content": "B-",
+        "teaching": "C+",
+        "grading": "B",
+        "workload": "B"
+      },
+      "ratingCount": 28
+    },
+    "COMP3511": {
+      "reviewCount": 57,
+      "ratings": {
+        "content": "B-",
+        "teaching": "B-",
+        "grading": "C+",
+        "workload": "B-"
+      },
+      "ratingCount": 72
+    },
+    "COMP3631": {
+      "reviewCount": 2,
+      "ratings": {
+        "content": "B+",
+        "teaching": "B",
+        "grading": "A-",
+        "workload": "A-"
+      },
+      "ratingCount": 5
+    },
+    "COMP3711": {
+      "reviewCount": 76,
+      "ratings": {
+        "content": "B+",
+        "teaching": "B+",
+        "grading": "B-",
+        "workload": "C+"
+      },
+      "ratingCount": 79
+    },
+    "COMP3721": {
+      "reviewCount": 22,
+      "ratings": {
+        "content": "B+",
+        "teaching": "B",
+        "grading": "B+",
+        "workload": "B-"
+      },
+      "ratingCount": 26
+    },
+    "COMP4021": {
+      "reviewCount": 16,
+      "ratings": {
+        "content": "B",
+        "teaching": "B+",
+        "grading": "B+",
+        "workload": "B"
+      },
+      "ratingCount": 23
+    },
+    "COMP4211": {
+      "reviewCount": 35,
+      "ratings": {
+        "content": "B",
+        "teaching": "B",
+        "grading": "B-",
+        "workload": "C+"
+      },
+      "ratingCount": 36
+    },
+    "COMP4221": {
+      "reviewCount": 21,
+      "ratings": {
+        "content": "D",
+        "teaching": "D-",
+        "grading": "D",
+        "workload": "D+"
+      },
+      "ratingCount": 22
+    },
+    "COMP4331": {
+      "reviewCount": 16,
+      "ratings": {
+        "content": "B-",
+        "teaching": "C-",
+        "grading": "B-",
+        "workload": "C"
+      },
+      "ratingCount": 17
+    },
+    "COMP4421": {
+      "reviewCount": 10,
+      "ratings": {
+        "content": "B-",
+        "teaching": "C+",
+        "grading": "B-",
+        "workload": "B"
+      },
+      "ratingCount": 17
+    },
+    "COMP4521": {
+      "reviewCount": 3,
+      "ratings": {
+        "content": "C+",
+        "teaching": "B-",
+        "grading": "B-",
+        "workload": "B-"
+      },
+      "ratingCount": 10
+    },
+    "COMP4633": {
+      "reviewCount": 2,
+      "ratings": {
+        "content": "A",
+        "teaching": "A",
+        "grading": "A",
+        "workload": "A-"
+      },
+      "ratingCount": 2
+    },
+    "COMP4900": {
+      "reviewCount": 2,
+      "ratings": {
+        "content": "B",
+        "teaching": "B-",
+        "grading": "B+",
+        "workload": "B"
+      },
+      "ratingCount": 7
+    },
+    "COMP4901B": {
+      "reviewCount": 2,
+      "ratings": {
+        "content": "B+",
+        "teaching": "B+",
+        "grading": "B+",
+        "workload": "B-"
+      },
+      "ratingCount": 4
+    },
+    "COMP4910": {
+      "reviewCount": 0,
+      "ratings": {
+        "content": "E",
+        "teaching": "A",
+        "grading": "A",
+        "workload": "A"
+      },
+      "ratingCount": 1
+    },
+    "COMP5212": {
+      "reviewCount": 45,
+      "ratings": {
+        "content": "A-",
+        "teaching": "B+",
+        "grading": "B+",
+        "workload": "B"
+      },
+      "ratingCount": 46
+    },
+    "COMP5331": {
+      "reviewCount": 50,
+      "ratings": {
+        "content": "A-",
+        "teaching": "A-",
+        "grading": "B+",
+        "workload": "B"
+      },
+      "ratingCount": 64
+    },
+    "COMP5411": {
+      "reviewCount": 3,
+      "ratings": {
+        "content": "A-",
+        "teaching": "B+",
+        "grading": "B+",
+        "workload": "B"
+      },
+      "ratingCount": 10
+    },
+    "COMP5621": {
+      "reviewCount": 35,
+      "ratings": {
+        "content": "B+",
+        "teaching": "A-",
+        "grading": "B+",
+        "workload": "A-"
+      },
+      "ratingCount": 35
+    },
+    "COMP6911": {
+      "reviewCount": 2,
+      "ratings": {
+        "content": "B+",
+        "teaching": "A-",
+        "grading": "A-",
+        "workload": "A-"
+      },
+      "ratingCount": 5
+    },
+    "CENG1000": {
+      "reviewCount": 76,
+      "ratings": {
+        "content": "B+",
+        "teaching": "B",
+        "grading": "B+",
+        "workload": "B-"
+      },
+      "ratingCount": 107
+    },
+    "CENG1500": {
+      "reviewCount": 30,
+      "ratings": {
+        "content": "B+",
+        "teaching": "B",
+        "grading": "B-",
+        "workload": "B+"
+      },
+      "ratingCount": 73
+    },
+    "CENG2220": {
+      "reviewCount": 12,
+      "ratings": {
+        "content": "C+",
+        "teaching": "C+",
+        "grading": "B",
+        "workload": "C"
+      },
+      "ratingCount": 17
+    },
+    "CENG2310": {
+      "reviewCount": 9,
+      "ratings": {
+        "content": "B-",
+        "teaching": "B+",
+        "grading": "A-",
+        "workload": "D+"
+      },
+      "ratingCount": 9
+    },
+    "SOSC1350": {
+      "reviewCount": 47,
+      "ratings": {
+        "content": "B+",
+        "teaching": "B",
+        "grading": "B+",
+        "workload": "A-"
+      },
+      "ratingCount": 86
+    },
+    "SOSC1440": {
+      "reviewCount": 98,
+      "ratings": {
+        "content": "B+",
+        "teaching": "B",
+        "grading": "B+",
+        "workload": "B+"
+      },
+      "ratingCount": 111
+    },
+    "SOSC1449": {
+      "reviewCount": 26,
+      "ratings": {
+        "content": "B",
+        "teaching": "B-",
+        "grading": "B+",
+        "workload": "B-"
+      },
+      "ratingCount": 27
+    },
+    "SOSC1470": {
+      "reviewCount": 2,
+      "ratings": {
+        "content": "B+",
+        "teaching": "B+",
+        "grading": "B+",
+        "workload": "A-"
+      },
+      "ratingCount": 23
+    },
+    "SOSC1510": {
+      "reviewCount": 9,
+      "ratings": {
+        "content": "A-",
+        "teaching": "B+",
+        "grading": "A",
+        "workload": "B+"
+      },
+      "ratingCount": 12
+    },
+    "SOSC1780": {
+      "reviewCount": 45,
+      "ratings": {
+        "content": "B",
+        "teaching": "B-",
+        "grading": "B+",
+        "workload": "A-"
+      },
+      "ratingCount": 52
+    },
+    "SOSC1840": {
+      "reviewCount": 60,
+      "ratings": {
+        "content": "B+",
+        "teaching": "B",
+        "grading": "A-",
+        "workload": "A-"
+      },
+      "ratingCount": 63
+    },
+    "SOSC1859": {
+      "reviewCount": 10,
+      "ratings": {
+        "content": "A-",
+        "teaching": "A-",
+        "grading": "B",
+        "workload": "B-"
+      },
+      "ratingCount": 13
+    },
+    "SOSC1960": {
+      "reviewCount": 129,
+      "ratings": {
+        "content": "B+",
+        "teaching": "B+",
+        "grading": "B+",
+        "workload": "B+"
+      },
+      "ratingCount": 131
+    },
+    "SOSC2400": {
+      "reviewCount": 4,
+      "ratings": {
+        "content": "B",
+        "teaching": "C+",
+        "grading": "B+",
+        "workload": "B+"
+      },
+      "ratingCount": 5
+    },
+    "SOSC3120": {
+      "reviewCount": 4,
+      "ratings": {
+        "content": "B-",
+        "teaching": "B-",
+        "grading": "B-",
+        "workload": "B+"
+      },
+      "ratingCount": 6
+    },
+    "SOSC3130": {
+      "reviewCount": 2,
+      "ratings": {
+        "content": "A-",
+        "teaching": "A-",
+        "grading": "A-",
+        "workload": "B+"
+      },
+      "ratingCount": 10
+    },
+    "SOSC3520": {
+      "reviewCount": 20,
+      "ratings": {
+        "content": "A-",
+        "teaching": "A-",
+        "grading": "A-",
+        "workload": "B"
+      },
+      "ratingCount": 25
+    },
+    "SOSC3540": {
+      "reviewCount": 1,
+      "ratings": {
+        "content": "B",
+        "teaching": "A-",
+        "grading": "A-",
+        "workload": "B+"
+      },
+      "ratingCount": 4
+    },
+    "SOSC3630": {
+      "reviewCount": 4,
+      "ratings": {
+        "content": "B-",
+        "teaching": "B-",
+        "grading": "B-",
+        "workload": "B+"
+      },
+      "ratingCount": 7
+    },
+    "SOSC4260": {
+      "reviewCount": 5,
+      "ratings": {
+        "content": "A-",
+        "teaching": "B+",
+        "grading": "A-",
+        "workload": "C+"
+      },
+      "ratingCount": 9
+    },
+    "ELEC1010": {
+      "reviewCount": 109,
+      "ratings": {
+        "content": "B+",
+        "teaching": "B",
+        "grading": "B+",
+        "workload": "A-"
+      },
+      "ratingCount": 111
+    },
+    "ELEC1100": {
+      "reviewCount": 349,
+      "ratings": {
+        "content": "B+",
+        "teaching": "B+",
+        "grading": "B",
+        "workload": "B-"
+      },
+      "ratingCount": 355
+    },
+    "ELEC1200": {
+      "reviewCount": 105,
+      "ratings": {
+        "content": "B+",
+        "teaching": "B+",
+        "grading": "B+",
+        "workload": "B-"
+      },
+      "ratingCount": 107
+    },
+    "ELEC2100": {
+      "reviewCount": 50,
+      "ratings": {
+        "content": "B+",
+        "teaching": "B-",
+        "grading": "B+",
+        "workload": "C+"
+      },
+      "ratingCount": 51
+    },
+    "ELEC2350": {
+      "reviewCount": 35,
+      "ratings": {
+        "content": "A-",
+        "teaching": "A-",
+        "grading": "B+",
+        "workload": "A-"
+      },
+      "ratingCount": 38
+    },
+    "ELEC2400": {
+      "reviewCount": 52,
+      "ratings": {
+        "content": "B+",
+        "teaching": "B+",
+        "grading": "B+",
+        "workload": "B+"
+      },
+      "ratingCount": 53
+    },
+    "ELEC2420": {
+      "reviewCount": 27,
+      "ratings": {
+        "content": "B+",
+        "teaching": "B+",
+        "grading": "B+",
+        "workload": "B"
+      },
+      "ratingCount": 30
+    },
+    "ELEC2600": {
+      "reviewCount": 24,
+      "ratings": {
+        "content": "B+",
+        "teaching": "B+",
+        "grading": "B+",
+        "workload": "B"
+      },
+      "ratingCount": 43
+    },
+    "ELEC2991": {
+      "reviewCount": 0,
+      "ratings": {
+        "content": "C",
+        "teaching": "C",
+        "grading": "C",
+        "workload": "C"
+      },
+      "ratingCount": 1
+    },
+    "ELEC3120": {
+      "reviewCount": 18,
+      "ratings": {
+        "content": "B+",
+        "teaching": "B",
+        "grading": "B",
+        "workload": "B-"
+      },
+      "ratingCount": 26
+    },
+    "ELEC3200": {
+      "reviewCount": 17,
+      "ratings": {
+        "content": "B",
+        "teaching": "B",
+        "grading": "B+",
+        "workload": "B"
+      },
+      "ratingCount": 22
+    },
+    "ELEC3300": {
+      "reviewCount": 38,
+      "ratings": {
+        "content": "B-",
+        "teaching": "C+",
+        "grading": "C+",
+        "workload": "D+"
+      },
+      "ratingCount": 39
+    },
+    "ELEC3310": {
+      "reviewCount": 6,
+      "ratings": {
+        "content": "A-",
+        "teaching": "A-",
+        "grading": "A-",
+        "workload": "B+"
+      },
+      "ratingCount": 8
+    },
+    "ELEC3400": {
+      "reviewCount": 5,
+      "ratings": {
+        "content": "B+",
+        "teaching": "B+",
+        "grading": "A-",
+        "workload": "B-"
+      },
+      "ratingCount": 21
+    },
+    "ELEC4110": {
+      "reviewCount": 5,
+      "ratings": {
+        "content": "B+",
+        "teaching": "B-",
+        "grading": "B-",
+        "workload": "B+"
+      },
+      "ratingCount": 6
+    },
+    "ELEC4240": {
+      "reviewCount": 1,
+      "ratings": {
+        "content": "B-",
+        "teaching": "B-",
+        "grading": "B-",
+        "workload": "B-"
+      },
+      "ratingCount": 2
+    },
+    "ELEC4420": {
+      "reviewCount": 0,
+      "ratings": {
+        "content": "B+",
+        "teaching": "C+",
+        "grading": "A-",
+        "workload": "B+"
+      },
+      "ratingCount": 3
+    },
+    "MATH1003": {
+      "reviewCount": 279,
+      "ratings": {
+        "content": "B",
+        "teaching": "B-",
+        "grading": "B+",
+        "workload": "B+"
+      },
+      "ratingCount": 299
+    },
+    "MATH1005": {
+      "reviewCount": 14,
+      "ratings": {
+        "content": "B+",
+        "teaching": "B+",
+        "grading": "B+",
+        "workload": "B+"
+      },
+      "ratingCount": 17
+    },
+    "MATH1006": {
+      "reviewCount": 6,
+      "ratings": {
+        "content": "C",
+        "teaching": "C-",
+        "grading": "D+",
+        "workload": "B-"
+      },
+      "ratingCount": 8
+    },
+    "MATH1013": {
+      "reviewCount": 1145,
+      "ratings": {
+        "content": "B-",
+        "teaching": "C+",
+        "grading": "C+",
+        "workload": "B-"
+      },
+      "ratingCount": 1157
+    },
+    "MATH1014": {
+      "reviewCount": 925,
+      "ratings": {
+        "content": "B-",
+        "teaching": "C+",
+        "grading": "C+",
+        "workload": "B-"
+      },
+      "ratingCount": 927
+    },
+    "MATH1020": {
+      "reviewCount": 3,
+      "ratings": {
+        "content": "B+",
+        "teaching": "B",
+        "grading": "C+",
+        "workload": "B+"
+      },
+      "ratingCount": 7
+    },
+    "MATH1023": {
+      "reviewCount": 204,
+      "ratings": {
+        "content": "B+",
+        "teaching": "B+",
+        "grading": "B+",
+        "workload": "C+"
+      },
+      "ratingCount": 204
+    },
+    "MATH2001": {
+      "reviewCount": 29,
+      "ratings": {
+        "content": "B",
+        "teaching": "C+",
+        "grading": "B-",
+        "workload": "C+"
+      },
+      "ratingCount": 30
+    },
+    "MATH2011": {
+      "reviewCount": 220,
+      "ratings": {
+        "content": "B+",
+        "teaching": "B",
+        "grading": "B",
+        "workload": "B+"
+      },
+      "ratingCount": 225
+    },
+    "MATH2023": {
+      "reviewCount": 183,
+      "ratings": {
+        "content": "B-",
+        "teaching": "B",
+        "grading": "C+",
+        "workload": "B-"
+      },
+      "ratingCount": 184
+    },
+    "MATH2033": {
+      "reviewCount": 70,
+      "ratings": {
+        "content": "B-",
+        "teaching": "C+",
+        "grading": "C+",
+        "workload": "B-"
+      },
+      "ratingCount": 73
+    },
+    "MATH2111": {
+      "reviewCount": 156,
+      "ratings": {
+        "content": "B",
+        "teaching": "B-",
+        "grading": "B",
+        "workload": "B+"
+      },
+      "ratingCount": 159
+    },
+    "MATH2121": {
+      "reviewCount": 114,
+      "ratings": {
+        "content": "B+",
+        "teaching": "B-",
+        "grading": "B",
+        "workload": "B-"
+      },
+      "ratingCount": 115
+    },
+    "MATH2131": {
+      "reviewCount": 48,
+      "ratings": {
+        "content": "B+",
+        "teaching": "B-",
+        "grading": "B-",
+        "workload": "C-"
+      },
+      "ratingCount": 48
+    },
+    "MATH2350": {
+      "reviewCount": 50,
+      "ratings": {
+        "content": "B",
+        "teaching": "B",
+        "grading": "B+",
+        "workload": "B+"
+      },
+      "ratingCount": 67
+    },
+    "MATH2351": {
+      "reviewCount": 48,
+      "ratings": {
+        "content": "B",
+        "teaching": "C+",
+        "grading": "C+",
+        "workload": "B+"
+      },
+      "ratingCount": 50
+    },
+    "MATH2411": {
+      "reviewCount": 124,
+      "ratings": {
+        "content": "B-",
+        "teaching": "C+",
+        "grading": "B-",
+        "workload": "B+"
+      },
+      "ratingCount": 137
+    },
+    "MATH2421": {
+      "reviewCount": 41,
+      "ratings": {
+        "content": "B",
+        "teaching": "B-",
+        "grading": "B",
+        "workload": "B+"
+      },
+      "ratingCount": 48
+    },
+    "MATH2511": {
+      "reviewCount": 23,
+      "ratings": {
+        "content": "B+",
+        "teaching": "B",
+        "grading": "B",
+        "workload": "B+"
+      },
+      "ratingCount": 33
+    },
+    "MATH3033": {
+      "reviewCount": 39,
+      "ratings": {
+        "content": "B-",
+        "teaching": "B-",
+        "grading": "B-",
+        "workload": "B"
+      },
+      "ratingCount": 41
+    },
+    "MATH3043": {
+      "reviewCount": 12,
+      "ratings": {
+        "content": "A-",
+        "teaching": "A-",
+        "grading": "A",
+        "workload": "C+"
+      },
+      "ratingCount": 14
+    },
+    "MATH3121": {
+      "reviewCount": 13,
+      "ratings": {
+        "content": "A-",
+        "teaching": "B+",
+        "grading": "B+",
+        "workload": "A-"
+      },
+      "ratingCount": 15
+    },
+    "MATH3332": {
+      "reviewCount": 7,
+      "ratings": {
+        "content": "B-",
+        "teaching": "C",
+        "grading": "B-",
+        "workload": "B"
+      },
+      "ratingCount": 13
+    },
+    "MATH3423": {
+      "reviewCount": 30,
+      "ratings": {
+        "content": "B+",
+        "teaching": "C+",
+        "grading": "C+",
+        "workload": "B"
+      },
+      "ratingCount": 33
+    },
+    "MATH4052": {
+      "reviewCount": 10,
+      "ratings": {
+        "content": "B",
+        "teaching": "C+",
+        "grading": "B+",
+        "workload": "B-"
+      },
+      "ratingCount": 17
+    },
+    "MATH4141": {
+      "reviewCount": 11,
+      "ratings": {
+        "content": "B+",
+        "teaching": "B",
+        "grading": "B",
+        "workload": "B-"
+      },
+      "ratingCount": 13
+    },
+    "MATH4223": {
+      "reviewCount": 6,
+      "ratings": {
+        "content": "B+",
+        "teaching": "B",
+        "grading": "B-",
+        "workload": "B+"
+      },
+      "ratingCount": 10
+    },
+    "MATH4424": {
+      "reviewCount": 0,
+      "ratings": {
+        "content": "A",
+        "teaching": "A-",
+        "grading": "A-",
+        "workload": "B+"
+      },
+      "ratingCount": 6
+    },
+    "MATH4427": {
+      "reviewCount": 4,
+      "ratings": {
+        "content": "A",
+        "teaching": "A",
+        "grading": "A",
+        "workload": "A-"
+      },
+      "ratingCount": 5
+    },
+    "MATH4511": {
+      "reviewCount": 19,
+      "ratings": {
+        "content": "B+",
+        "teaching": "C+",
+        "grading": "B-",
+        "workload": "C+"
+      },
+      "ratingCount": 19
+    },
+    "MATH4999": {
+      "reviewCount": 3,
+      "ratings": {
+        "content": "A",
+        "teaching": "B+",
+        "grading": "B",
+        "workload": "A"
+      },
+      "ratingCount": 4
+    },
+    "MATH5111": {
+      "reviewCount": 5,
+      "ratings": {
+        "content": "B+",
+        "teaching": "B-",
+        "grading": "B+",
+        "workload": "B-"
+      },
+      "ratingCount": 7
+    },
+    "MATH5311": {
+      "reviewCount": 9,
+      "ratings": {
+        "content": "A-",
+        "teaching": "B+",
+        "grading": "B+",
+        "workload": "B+"
+      },
+      "ratingCount": 10
+    }
+  }
+}

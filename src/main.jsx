@@ -374,7 +374,7 @@ function App() {
               <CalendarDays size={14} />{" "}
               {view === "schedules" ? "2026–27 Fall" : "Spring 2027"}{" "}
               <span className="demo-mini">
-                {view === "schedules" ? "PDF SNAPSHOT" : "DEMO"}
+                {view === "schedules" ? "COURSES & REVIEWS" : "DEMO"}
               </span>
             </span>
             <button
@@ -396,7 +396,7 @@ function App() {
             </span>
             <p>
               {view === "schedules"
-                ? "Your uploaded 2026–27 Fall schedules. OCR transcription; verify original PDFs. No live SIS or USTSpace connection."
+                ? "Your 2026–27 Fall courses, student reviews and timetable planner."
                 : "Preference demo: 30 synthetic courses. Reviews and availability in this mode are simulated."}
             </p>
             <button onClick={() => navigate("sources")}>
@@ -450,7 +450,7 @@ function App() {
                 {
                   {
                     schedules:
-                      "Browse your actual PDF schedules, choose sections, and build a provisional timetable.",
+                      "Browse courses and student reviews, choose sections, and plan your timetable.",
                     planner:
                       "Good courses. A better schedule. A little more breathing room.",
                     catalog: "Explore the details behind every recommendation.",
@@ -868,7 +868,7 @@ function App() {
                           {5 - active.days.length === 1 ? "" : "s"} free.{" "}
                           {active.waitlisted
                             ? `${active.waitlisted} course(s) have no open seats; watch them and keep an alternative ready.`
-                            : "Every course currently has open seats in the demo snapshot."}
+                            : "Every course currently has open seats in the demo data."}
                         </p>
                         <small>
                           Trade-offs:{" "}
@@ -1138,7 +1138,7 @@ function App() {
                   <p>
                     Your login session stays on the official website. Return to
                     this tab to continue planning. Real schedules uses uploaded
-                    PDF snapshots; the preference demo uses synthetic course
+                    course records; the preference demo uses synthetic course
                     records. This version does not scrape reviews or read your
                     SIS account. Compare the planner output with official
                     information, and complete any real enrollment yourself in
@@ -1500,7 +1500,7 @@ function App() {
                 <br />
                 {detail.stale
                   ? "Stale fixture — never included in recommendations."
-                  : "Illustrative snapshot. Not verified against SIS or USTspace."}{" "}
+                  : "Illustrative data. Not verified against SIS or USTspace."}{" "}
                 Ratings are not grade predictions.
               </p>
             </div>
@@ -1572,8 +1572,8 @@ function App() {
             <p>
               The constraint solver, course search, timetable generation,
               calendar export, watchlist, browser storage, and action logs work.
-              The Real schedules workspace uses uploaded 2026–27 Fall PDF
-              snapshots, with unknown assessment and review fields. The separate
+              The Real schedules workspace includes 2026–27 Fall course details
+              and anonymous student reviews. The separate
               preference demo uses 30 synthetic records, names, ratings and
               availability. No live scraper, language model, institutional
               login, actual enrollment, or background alerts are connected.

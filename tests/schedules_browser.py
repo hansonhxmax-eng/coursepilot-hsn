@@ -14,7 +14,7 @@ with sync_playwright() as p:
  page=context.new_page();errors=[];page.on('pageerror',lambda e:errors.append(str(e)))
  page.goto(base,wait_until='networkidle')
  expect(page.locator('h1')).to_contain_text('Your real courses')
- expect(page.locator('.snapshot-note')).to_contain_text('Capture date is unknown')
+ expect(page.locator('.snapshot-note')).to_contain_text('2026–27 Fall')
  expect(page.locator('.real-stats')).to_contain_text('544')
  expect(page.locator('.real-course')).to_have_count(12)
  passed('Real uploaded PDF workspace is the default; term, OCR and stale-availability boundaries are visible')
@@ -23,9 +23,10 @@ with sync_playwright() as p:
  expect(page.locator('.real-course')).to_have_count(1);expect(page.locator('.real-course')).to_contain_text('Principles of Accounting')
  passed('Real catalog paginates and matches spaced or compact course codes')
  page.locator('.real-course-title').first.click()
+ page.locator('.course-class-sections > summary').click()
  expect(page.get_by_role('dialog')).to_contain_text('L01')
  expect(page.get_by_role('dialog')).to_contain_text('13:30–14:50')
- expect(page.get_by_role('dialog')).to_contain_text('Review scores, workload and assessment rules are unknown')
+ expect(page.get_by_role('dialog')).to_contain_text('Confirm the current syllabus')
  assert page.get_by_role('dialog').locator('a[href*=".pdf"]').count()==0
  page.keyboard.press('Escape');expect(page.get_by_role('dialog')).to_have_count(0)
  passed('Course details retain class duration and unknown fields without PDF links')
@@ -57,14 +58,14 @@ with sync_playwright() as p:
  info.value.save_as(out/'real-week.ics');ics=(out/'real-week.ics').read_text()
  assert 'DTEND;TZID=Asia/Hong_Kong:20261105T175000' in ics
  assert 'DTSTART;TZID=Asia/Hong_Kong:20261105T160000' in ics
- assert '[PDF snapshot]' in ics and 'RRULE:' not in ics
+ assert 'ACCT 2010' in ics and 'PDF snapshot' not in ics and 'RRULE:' not in ics
  passed('Real calendar export preserves 110-minute session and uses a single user-selected week')
- week=page.get_by_label('Snapshot week starting Monday');week.fill('2026-11-03')
+ week=page.get_by_label('Week starting Monday');week.fill('2026-11-03')
  expect(week).to_have_value('2026-11-02');expect(page.locator('.real-message')).to_contain_text('Choose a Monday')
  passed('Non-Monday input is rejected; last valid week stays selected')
  page.get_by_role('checkbox',name='No mandatory attendance',exact=True).check()
  page.get_by_role('button',name='Generate section plans').click()
- expect(page.locator('.real-blockers')).to_contain_text('attendance not established')
+ expect(page.locator('.real-blockers')).to_contain_text('attendance not confirmed')
  expect(page.locator('.real-plan-tabs button')).to_have_count(0)
  passed('Missing attendance evidence yields no plan instead of a false no-attendance recommendation')
  page.get_by_role('checkbox',name='No mandatory attendance',exact=True).uncheck()
@@ -87,32 +88,18 @@ with sync_playwright() as p:
  page.get_by_role('button',name='Generate section plans').click()
  expect(page.locator('.real-plan-details')).to_contain_text('L01')
  passed('Conflicting locked section returns no plan; compatible section lock is respected')
+ page.locator('#real-reviews details > summary').click()
  with page.expect_download() as info:page.get_by_role('button',name='Download course codes').click()
  info.value.save_as(out/'codes.json');codes=json.loads((out/'codes.json').read_text())
  assert 'ACCT2010' in codes['courseCodes'] and 'AISC1000B' in codes['courseCodes']
  assert not codes['excluded']
  assert 'ACCT6970A' in codes['courseCodes'] and 'ACCT7900I' in codes['courseCodes']
  passed('Downloadable course list contains well-formed real codes, checked suffix corrections and an explicit exclusion field')
- zip_response=context.request.get(base.rstrip('/')+'/collector/CoursePilot-collector.zip');assert zip_response.status==200
- with zipfile.ZipFile(io.BytesIO(zip_response.body())) as z:
-  names=z.namelist();assert any(n.endswith('collect.py') for n in names) and any(n.endswith('README.md') for n in names)
- passed('Collector and its login/setup guide are downloadable as a valid ZIP')
- fixture={'schemaVersion':1,'kind':'ustspace-visible-snapshots','courses':[{'courseCode':'ACCT2010','status':'captured','sourceUrl':'https://ust.space/review/ACCT2010','capturedAt':'2026-11-03T04:00:00Z','text':'TEST FIXTURE, not an actual review. <script>window.TEST_INJECTION=true</script>','completeness':'visible-content-only'}]}
- valid=out/'test-review.json';valid.write_text(json.dumps(fixture))
- page.get_by_label('Import USTSpace snapshot JSON').set_input_files(valid)
- expect(page.locator('.real-review-count')).to_contain_text('1 course review snapshot')
- page.locator('.review-evidence summary').click();expect(page.locator('.review-evidence pre')).to_contain_text('<script>')
- assert not page.evaluate('Boolean(window.TEST_INJECTION)')
- passed('Imported review text stays literal, matches a real code, and does not execute markup or infer academic tags')
- invalid=out/'invalid-review.json';invalid.write_text('{}');page.get_by_label('Import USTSpace snapshot JSON').set_input_files(invalid)
- expect(page.locator('#real-reviews .real-message')).to_contain_text('Import failed')
- expect(page.locator('.real-review-count')).to_contain_text('1 course review snapshot')
- passed('Invalid import fails without deleting earlier session evidence')
  page.get_by_role('button',name='Preference demo',exact=True).click();expect(page.locator('.demo-banner')).to_contain_text('synthetic')
- page.get_by_role('button',name='Real schedules',exact=True).click();expect(page.locator('.real-review-count')).to_contain_text('1 course review snapshot')
- page.reload();expect(page.locator('.real-review-count')).to_contain_text('0 course review snapshot')
- expect(page.locator('.real-basket')).to_contain_text('ACCT 2010')
- passed('Real/demo modes are distinct; course selection persists while imported review text clears on reload')
+ page.get_by_role('button',name='Real schedules',exact=True).click()
+ expect(page.locator('#real-reviews')).to_contain_text('14,740')
+ page.reload();expect(page.locator('.real-basket')).to_contain_text('ACCT 2010')
+ passed('Built-in reviews survive reload; course selection and separate synthetic mode continue to work')
  page.get_by_role('button',name='Try a real schedule').click()
  page.screenshot(path=str(out/'real-desktop.png'),full_page=True)
  assert not page.evaluate('document.documentElement.scrollWidth>innerWidth')

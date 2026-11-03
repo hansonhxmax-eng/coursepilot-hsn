@@ -27,11 +27,12 @@ npm run preview -- --port 4173
 - 12 offline PDFs / 135 pages → 544 detected courses / 1,443 section records. 1,206 records have parseable times and labels; source files are kept offline and are not published on this website. Original capture date is unknown. These are OCR transcriptions, not a live SIS connection or certified extraction accuracy.
 - Department search, pagination and literal CC26-tag filtering. The files also contain major and postgraduate courses; departments are never converted into Common Core domains or eligibility claims.
 - Select up to six courses, lock sections and generate up to three provisional lecture/tutorial/lab schedules. Date-limited sessions are handled, TBA/ambiguous components are excluded, and explicit section-matching requirements block automatic pairing until verified.
-- Timetable ranking uses campus-day count and early meetings only. Attendance, quizzes, groups, ratings and workload remain unknown. Enabling unsupported hard constraints returns no plan.
+- Timetable ranking uses campus-day count and early meetings only. Current attendance, quiz and group-work requirements remain unconfirmed; historical review ratings are displayed separately. Enabling unsupported hard constraints returns no plan.
 - User-selected Monday-week calendar exports preserve actual meeting durations; no official academic calendar or holiday assumptions are invented.
-- Local collector downloads and USTSpace JSON import show visible page evidence without converting it into ratings or assessment assertions. Imported evidence remains in tab memory and clears on reload.
+- Course details include four letter-grade rating dimensions and 14,740 anonymous reviews, with term/teacher filters, text search, pagination and helpful ordering. Reviews are bundled by course and loaded only when opened; they persist after reload.
+- Review summaries count discussion themes across the prepared comments, link to supporting quotations and give conditional selection/study advice. They do not establish current assessment rules.
 
-See [real-data validation and limitations](submission/real-data-validation.md), [current five reviewer scenarios](submission/reviewer-scenarios.md), and [the local collector guide](tools/ustspace/README.md). Authenticated USTSpace compatibility remains unverified until the owner runs the first-three-course check locally. No login information is collected by the platform.
+See [real-data validation and limitations](submission/real-data-validation.md), [current five reviewer scenarios](submission/reviewer-scenarios.md), and [the local collector guide](tools/ustspace/README.md). The owner supplied a completed 544-course collection; 172 courses contain captured data and 372 are unavailable. No login information is collected by the platform.
 
 ## Preference demonstration (synthetic mode)
 
@@ -53,7 +54,7 @@ See [real-data validation and limitations](submission/real-data-validation.md), 
 
 The **Official sources** page and course details provide safe new-tab entry links and the SIS path. No institutional password is collected, login state is not inspected, and opening an external page is never presented as an authenticated connection. Codes in the synthetic preference demonstration may not correspond to actual offerings: verify official details independently.
 
-There is no hosted live scraper, institutional integration, trained NLP model, grade prediction, external notification delivery, background monitor, or automatic enrollment. The separately downloaded local collector reads permitted visible pages only after the owner logs in on their own computer; its real-site compatibility has not yet been verified. Seat updates and logs reset on reload; preferences and watched IDs persist only in the same browser. Course selections remain local; imported review text is not sent to a backend or GitHub. Static app assets are served by GitHub Pages; uploaded PDFs are excluded. Third-party sites receive normal browser requests when explicitly opened. Review scores are sample fixtures, not verified student opinions.
+There is no hosted live scraper, institutional integration, trained NLP model, grade prediction, external notification delivery, background monitor, or automatic enrollment. The separately downloaded local collector reads permitted visible pages only after the owner logs in on their own computer; its real-site compatibility has not yet been verified. Seat updates and logs reset on reload; preferences and watched IDs persist only in the same browser. Course selections remain local. The prepared anonymous reviews are static site assets; raw collection exports and reviewer handles are not included. Static app assets are served by GitHub Pages; uploaded PDFs are excluded. Third-party sites receive normal browser requests when explicitly opened. Scores in the synthetic preference demonstration are sample fixtures. Real course detail ratings and comments use the supplied USTSpace collection.
 
 ## Synthetic-mode ranking
 
@@ -69,7 +70,7 @@ Balanced scoring = rating/5 × 50 + (4 − weekly workload) × 10 + availability
 - [Raw unit-test evidence](submission/evidence/unit-results.txt)
 - [Raw browser-test evidence](submission/evidence/browser-results.txt)
 
-Final validation: 36 JavaScript tests, 14 Python collector helper tests, 19 real-workspace browser checkpoints, 20 synthetic-mode browser checkpoints, and a collector MOCK-browser test passed. See the validation document for the precise scope. No authenticated USTSpace collection or full-review-window uptime is claimed.
+Current review-integration validation: 39 JavaScript tests, 21 Python tests, 7 review browser checks, 16 real-workspace checks and 20 synthetic-mode checks passed. See the validation document for the precise scope. No authenticated USTSpace collection or full-review-window uptime is claimed.
 
 Optional browser suite (Python 3.12; Playwright must be installed separately):
 
@@ -105,3 +106,7 @@ Inspect the results and original PDFs before publishing. The parser and narrow c
 MATH and collector update: 82 MATH courses are included in the 544-code list. The Windows launcher processes the full list with automatic resume; unavailable records do not stop collection. Uploaded PDFs and all PDF links have been removed from the deployed site.
 
 Collector `2026.11.03.5-auto-wait`: log in locally and open any listed course, including in a new tab. The collector automatically runs a visible-page test and then processes the remaining list, without terminal confirmation. Existing captured records are retained during resume. The five automatic workflow fixtures run with `CHROMIUM_PATH=/usr/bin/chromium python3 tests/collector_auto_browser.py`; real authenticated-site compatibility still needs the owner's local run.
+
+## Prepare embedded course reviews
+
+The checked-in anonymous per-course files under `public/reviews/` and the small index at `src/reviews/catalog.json` support normal builds without the raw uploads. To refresh from a new local collection, run `python3 scripts/prepare-reviews.py /path/to/ustspace-all-snapshots.json`, inspect the audit output, then build and validate. Keep raw input outside the checkout. Review-specific checks: `python3 -m unittest discover -s tests -p 'test_reviews.py' -v` and, with preview running, `CHROMIUM_PATH=/usr/bin/chromium python3 tests/reviews_browser.py`. See `submission/review-integration.md` for coverage and exclusions. Publish the source and static build separately using the deployment instructions. This release targets the desktop website.

@@ -37,7 +37,7 @@ export function sectionIssues(section, prefs) {
     prefs.snapshotOpen &&
     !(typeof section.seats === "number" && section.seats > 0)
   )
-    issues.push("No readable positive seat count in snapshot");
+    issues.push("No available seats recorded");
   return issues;
 }
 export function courseOptions(course, prefs, locks = {}, limit = 2000) {
@@ -48,12 +48,12 @@ export function courseOptions(course, prefs, locks = {}, limit = 2000) {
     ["noGroups", "group", "group projects"],
   ]) {
     if (prefs[pref] && course[key] !== false)
-      unknowns.push(`${label} not established by schedule PDFs`);
+      unknowns.push(`${label} not confirmed for this course`);
   }
   if (course.issues.length) unknowns.push(...course.issues);
   if (course.sections.some((s) => s.kind === "unknown"))
     unknowns.push(
-      "Unclassified section component requires PDF verification; automatic pairing disabled",
+      "Unclassified section component requires verification; automatic pairing disabled",
     );
   if (/Matching between Lecture.*Tutorial required/i.test(course.sourceHeader))
     unknowns.push(
@@ -318,8 +318,8 @@ export function calendarSnapshot(items, weekStart) {
           `DTSTAMP:${stamp(new Date())}Z`,
           `DTSTART;TZID=Asia/Hong_Kong:${stamp(start)}`,
           `DTEND;TZID=Asia/Hong_Kong:${stamp(end)}`,
-          `SUMMARY:${esc(course.code + " " + section.label + " " + course.title + " [PDF snapshot]")}`,
-          `DESCRIPTION:${esc("User-selected sample week, not an official enrollment record. Verify dates and section pairing in SIS. Source: " + section.sourceFile)}`,
+          `SUMMARY:${esc(course.code + " " + section.label + " " + course.title)}`,
+          `DESCRIPTION:${esc("User-selected sample week, not an official enrollment record. Verify dates and section pairing in SIS.")}`,
           "END:VEVENT",
         ].join("\r\n");
         // Multiple date-limited records for the same meeting should not duplicate an event.

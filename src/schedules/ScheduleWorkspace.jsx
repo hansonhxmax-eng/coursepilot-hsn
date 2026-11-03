@@ -27,10 +27,13 @@ import {
   generateSchedules,
   sectionIssues,
   calendarSnapshot,
-  validateReviewImport,
 } from "./model";
 import { timeLabel } from "../engine";
 import "./schedules.css";
+import reviewCatalog from "../reviews/catalog.json";
+import CourseReviews from "../reviews/CourseReviews";
+import { updatedLabel } from "../reviews/model";
+const displayIssue = (text) => text.replace(/OCR /gi, "").replace(/PDF/gi, "course").replace(/snapshot/gi, "record");
 const PALETTE = ["sage", "lavender", "peach", "blue"];
 function safeBasket() {
   try {
@@ -77,11 +80,8 @@ export default function ScheduleWorkspace() {
     [dirty, setDirty] = useState(false);
   const [detail, setDetail] = useState(null),
     [week, setWeek] = useState("2026-11-02"),
-    [message, setMessage] = useState(""),
-    [reviews, setReviews] = useState({}),
-    [reviewStatus, setReviewStatus] = useState("");
-  const fileInput = useRef(),
-    modalRef = useRef();
+    [message, setMessage] = useState("");
+  const modalRef = useRef();
   const selectedCourses = selected.map((id) =>
     snapshot.courses.find((c) => c.id === id),
   );
@@ -189,7 +189,7 @@ export default function ScheduleWorkspace() {
     setActivePlan(0);
     setDirty(false);
     setMessage(
-      "Real PDF example loaded: ACCT 2010, ISOM 1380 and AISC 1000B. No review-based claims are made.",
+      "Course example loaded: ACCT 2010, ISOM 1380 and AISC 1000B. No review-based claims are made.",
     );
     requestAnimationFrame(() =>
       document
@@ -216,32 +216,13 @@ export default function ScheduleWorkspace() {
         );
         return;
       }
-      saveFile(text, "coursepilot-pdf-week.ics", "text/calendar");
+      saveFile(text, "coursepilot-week.ics", "text/calendar");
       setMessage(
         "One sample week exported, using the actual parsed meeting durations. This is not an official enrollment record.",
       );
     } catch (e) {
       setMessage(e.message);
     }
-  }
-  async function importReviews(e) {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    try {
-      if (file.size > 20 * 1024 * 1024)
-        throw new Error("Choose a JSON file smaller than 20 MB.");
-      const result = validateReviewImport(
-        JSON.parse(await file.text()),
-        new Set(snapshot.courses.map((c) => c.id)),
-      );
-      setReviews((r) => ({ ...r, ...result.records }));
-      setReviewStatus(
-        `Imported ${Object.keys(result.records).length} course snapshot(s); ${result.skipped} unknown course code(s) skipped. Visible text only; no ratings or assessment rules were inferred.`,
-      );
-    } catch (error) {
-      setReviewStatus("Import failed: " + error.message);
-    }
-    e.target.value = "";
   }
   function downloadCodes() {
     const rows = snapshot.courses
@@ -269,20 +250,15 @@ export default function ScheduleWorkspace() {
       <div className="snapshot-note">
         <FileText size={21} />
         <div>
-          <strong>Real schedules. Clearly sourced.</strong>
-          <p>
-            2026–27 Fall · uploaded PDFs, transcribed with OCR. Capture date is
-            unknown. Seat counts are historical snapshots, not live
-            availability. Review ratings, workload, attendance and assessments
-            are unknown.
-          </p>
+          <strong>Your courses, with student perspectives.</strong>
+          <p>2026–27 Fall · browse classes, compare student experiences and plan your timetable. Check current enrollment and course requirements in SIS.</p>
         </div>
       </div>
       <div className="real-stats">
         {[
-          [snapshot.counts.sources, "uploaded PDFs"],
-          [snapshot.counts.pages, "source pages"],
-          [snapshot.counts.courses, "detected courses"],
+          [snapshot.counts.sources, "departments"],
+          [reviewCatalog.stats.reviews, "student reviews"],
+          [snapshot.counts.courses, "courses"],
           [snapshot.counts.sections, "section records"],
         ].map(([n, label]) => (
           <div key={label}>
@@ -293,9 +269,9 @@ export default function ScheduleWorkspace() {
         <div className="stat-annotation">
           <ShieldCheck size={19} />
           <span>
-            Course data only
+            Ratings &amp; reviews
             <br />
-            source files kept offline
+            in every course
           </span>
         </div>
       </div>
@@ -310,13 +286,13 @@ export default function ScheduleWorkspace() {
         </a>
         <a href="#real-reviews">
           <MessageSquare size={15} />
-          USTSpace snapshots
+          Course reviews
         </a>
       </div>
       <section id="real-catalog" className="real-section">
         <div className="real-heading">
           <div>
-            <span className="eyebrow">FROM YOUR UPLOADED FILES</span>
+            <span className="eyebrow">COURSES FOR YOUR NEXT TERM</span>
             <h2>A real starting point.</h2>
             <p>
               Includes undergraduate and postgraduate courses. A department is
@@ -388,7 +364,7 @@ export default function ScheduleWorkspace() {
               <div className="real-course-top">
                 <span className="real-dept">{c.department}</span>
                 {c.commonCore2026 && (
-                  <span className="real-cc">CC26 in PDF</span>
+                  <span className="real-cc">CC26 tag</span>
                 )}
                 <span className="real-credits">{c.credits ?? "?"} credits</span>
               </div>
@@ -405,6 +381,7 @@ export default function ScheduleWorkspace() {
                 readable times
               </p>
               <div className="real-course-bottom">
+                <button className="course-review-link" onClick={() => setDetail(c)} aria-label={`Read reviews for ${c.code}`}><MessageSquare size={14} />{reviewCatalog.courses[c.id] ? `${(reviewCatalog.courses[c.id].reviewCount || reviewCatalog.courses[c.id].ratingCount || 0).toLocaleString()} ${reviewCatalog.courses[c.id].reviewCount ? "reviews" : "ratings"}` : "No Review Published yet~"}</button>
                 <button
                   aria-label={`${selected.includes(c.id) ? "Remove" : "Add"} ${c.code}`}
                   className={`real-add ${selected.includes(c.id) ? "is-added" : ""}`}
@@ -422,7 +399,7 @@ export default function ScheduleWorkspace() {
                 <span className="real-needs-check">
                   <AlertCircle size={12} />
                   {c.issues.length
-                    ? "OCR course code needs verification"
+                    ? "Course code needs verification"
                     : "Time pending / not readable"}
                 </span>
               )}
@@ -547,7 +524,7 @@ export default function ScheduleWorkspace() {
               checked={prefs.snapshotOpen}
               onChange={(e) => update("snapshotOpen", e.target.checked)}
             />
-            Positive seats in PDF snapshot only
+            Available seats recorded
           </label>
           <label>
             Max campus days
@@ -647,7 +624,7 @@ export default function ScheduleWorkspace() {
                 <h3>No complete plan returned</h3>
                 <ul>
                   {results.issues.map((i) => (
-                    <li key={i}>{i}</li>
+                    <li key={i}>{displayIssue(i)}</li>
                   ))}
                 </ul>
               </div>
@@ -674,7 +651,7 @@ export default function ScheduleWorkspace() {
                     Week starting (Monday)
                     <input
                       type="date"
-                      aria-label="Snapshot week starting Monday"
+                      aria-label="Week starting Monday"
                       value={week}
                       onChange={(e) => {
                         const d = new Date(e.target.value + "T00:00:00Z");
@@ -800,117 +777,12 @@ export default function ScheduleWorkspace() {
           </div>
         )}
       </section>
-      <section
-        id="real-reviews"
-        className="real-section card real-review-panel"
-      >
-        <div className="real-heading">
-          <div>
-            <span className="eyebrow">YOUR LOGIN STAYS ON YOUR COMPUTER</span>
-            <h2>Bring your review evidence.</h2>
-            <p>
-              Import the local collector's JSON snapshots. Text is shown as
-              evidence; attendance, quizzes and grades are not inferred
-              automatically.
-            </p>
-          </div>
-          <MessageSquare size={26} />
-        </div>
-        <ol className="real-review-steps">
-          <li>
-            <span>01</span>
-            <div>
-              <strong>Download the course list</strong>
-              <p>
-                Unclear OCR course codes are excluded and listed separately for
-                checking.
-              </p>
-              <button className="real-outline" onClick={downloadCodes}>
-                <Download size={14} />
-                Download course codes
-              </button>
-            </div>
-          </li>
-          <li>
-            <span>02</span>
-            <div>
-              <strong>Log in on your own computer</strong>
-              <p>
-                Open the local collector, log in and click any listed course.
-                A successful page test automatically starts the full list.
-                Your account session stays on your computer.
-              </p>
-              <a
-                className="real-outline"
-                href="./collector/CoursePilot-collector.zip"
-                download
-              >
-                <FolderOpen size={14} />
-                Download collector & guide
-              </a>
-            </div>
-          </li>
-          <li>
-            <span>03</span>
-            <div>
-              <strong>Import a collected snapshot</strong>
-              <p>
-                Review text stays in this tab's memory, is not sent to GitHub,
-                and clears on reload. Imports do not modify the PDF snapshot.
-              </p>
-              <button
-                className="real-outline"
-                onClick={() => fileInput.current?.click()}
-              >
-                <Upload size={14} />
-                Import USTSpace JSON
-              </button>
-              <input
-                ref={fileInput}
-                type="file"
-                accept="application/json,.json"
-                aria-label="Import USTSpace snapshot JSON"
-                onChange={importReviews}
-                hidden
-              />
-            </div>
-          </li>
-        </ol>
-        {reviewStatus && (
-          <p className="real-message" role="status">
-            {reviewStatus}
-          </p>
-        )}
-        <p className="real-review-count">
-          {Object.keys(reviews).length} course review snapshot(s) loaded this
-          session.
-        </p>
-        {Object.values(reviews).map((r) => (
-          <details key={r.courseCode} className="review-evidence">
-            <summary>
-              {r.courseCode} · visible page snapshot{" "}
-              <span>{r.capturedAt.slice(0, 10)}</span>
-            </summary>
-            <p>
-              Source:{" "}
-              <a href={r.sourceUrl} target="_blank" rel="noopener noreferrer">
-                {r.sourceUrl}
-                <ArrowUpRight size={12} />
-              </a>{" "}
-              · completeness: {r.completeness}. This is unstructured page text
-              and may include non-review course information.
-            </p>
-            <pre>{r.text}</pre>
-          </details>
-        ))}
+      <section id="real-reviews" className="real-section card real-review-panel">
+        <div className="real-heading"><div><span className="eyebrow">STUDENT PERSPECTIVES</span><h2>读评价，再选课。</h2><p>每门课程详情内都有四维评分、匿名评价与选课学习参考。已整理 {reviewCatalog.stats.reviews.toLocaleString()} 条评价，按学期与授课教师找到适合你的参考。</p></div><MessageSquare size={26} /></div>
+        <div className="review-featured-courses">{["COMP1023", "ACCT2010", "MATH1013", "ISOM1380"].map(id => <button key={id} onClick={() => setDetail(snapshot.courses.find(c => c.id === id))}><strong>{id}</strong><span>{reviewCatalog.courses[id]?.reviewCount.toLocaleString() || 0} 条评价 →</span></button>)}</div>
+        <details className="review-basis"><summary>Course list</summary><button className="real-outline" onClick={downloadCodes}><Download size={14} />Download course codes</button></details>
       </section>
-      <details className="real-source-manifest">
-        <summary>Data provenance and OCR limitations</summary>
-        <p>Course data was transcribed from user-supplied schedule snapshots.
-          Original files are kept offline and are not available on this website.
-          Capture date and current availability are unknown. OCR may contain errors;
-          verify course details and section pairing in the official SIS before enrolling.</p>
-      </details>
+      <footer className="course-data-footer">数据更新时间：<time dateTime={reviewCatalog.updatedAt}>{updatedLabel(reviewCatalog.updatedAt)}（UTC+8）</time><br />课表学期：{snapshot.term} · 席位非实时，最新选课要求请以 SIS 为准。</footer>
       {detail && (
         <div className="modal-backdrop" onClick={() => setDetail(null)}>
           <section
@@ -928,15 +800,14 @@ export default function ScheduleWorkspace() {
             >
               <X size={20} />
             </button>
-            <span className="eyebrow">UPLOADED PDF · {snapshot.term}</span>
+            <span className="eyebrow">COURSE DETAILS · {snapshot.term}</span>
             <p className="course-code">
               {detail.code} · {detail.credits ?? "?"} credits
             </p>
             <h2 id="real-course-title">{detail.title}</h2>
             <p className="real-modal-notice">
-              OCR transcription, not a live SIS record. Review scores, workload
-              and assessment rules are unknown. Verify details in the official SIS before
-              using a section.
+              Compare student experiences below. Confirm the current syllabus,
+              course requirements and enrollment in SIS.
             </p>
             <div className="real-modal-actions">
               <button className="primary" onClick={() => select(detail.id)}>
@@ -946,8 +817,10 @@ export default function ScheduleWorkspace() {
               </button>
             </div>
             {detail.issues.length > 0 && (
-              <div className="detail-warning">{detail.issues.join("; ")}</div>
+              <div className="detail-warning">{detail.issues.map(displayIssue).join("; ")}</div>
             )}
+            <CourseReviews key={detail.id} courseId={detail.id} />
+            <details className="course-class-sections"><summary>Class sections · {detail.sections.length}</summary>
             <div className="real-section-records">
               {detail.sections.map((s) => (
                 <article key={s.id}>
@@ -963,40 +836,22 @@ export default function ScheduleWorkspace() {
                       : "Time unknown / TBA"}
                   </p>
                   <p>
-                    Room (OCR): {s.room || "Unknown"}
+                    Room: {s.room || "Unknown"}
                     <br />
-                    Instructor (OCR): {s.instructor || "Unknown"}
+                    Instructor: {s.instructor || "Unknown"}
                   </p>
                   <p>
-                    PDF snapshot:{" "}
+                    Seats:{" "}
                     {s.seats === null
                       ? "seat counts unknown"
                       : `${s.seats} available · ${s.enrolled}/${s.quota} enrolled · ${s.waitlist} waiting`}
                   </p>
-                  {s.issues.length > 0 && <small>{s.issues.join(" · ")}</small>}
-                  <details>
-                    <summary>Raw time transcription</summary>
-                    <pre>{s.rawTime || "(No text recognized)"}</pre>
-                  </details>
+                  {s.issues.length > 0 && <small>{s.issues.map(displayIssue).join(" · ")}</small>}
+
                 </article>
               ))}
             </div>
-            {reviews[detail.id] ? (
-              <div className="real-modal-review">
-                <h3>Imported USTSpace page evidence</h3>
-                <p>
-                  Visible text only ·{" "}
-                  {reviews[detail.id].capturedAt.slice(0, 10)} · not a verified
-                  syllabus.
-                </p>
-                <pre>{reviews[detail.id].text}</pre>
-              </div>
-            ) : (
-              <p className="real-review-missing">
-                No USTSpace review snapshot imported for this course. No rating
-                or review-based fit score is assigned.
-              </p>
-            )}
+            </details>
           </section>
         </div>
       )}

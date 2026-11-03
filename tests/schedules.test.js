@@ -159,7 +159,7 @@ test("unknown assessment preference is a hard blocker, never inferred from absen
   for (const key of ["noAttendance", "noQuizzes", "noGroups"]) {
     const r = generateSchedules(chosen, { ...REAL_DEFAULT, [key]: true });
     assert.equal(r.plans.length, 0);
-    assert.match(r.issues.join(), /not established/);
+    assert.match(r.issues.join(), /not confirmed/);
   }
 });
 test("locking a section is respected; invalid locks are not silently ignored", () => {
@@ -196,7 +196,8 @@ test("ICS preserves actual section duration and exports only a user-selected Mon
   const text = calendarSnapshot(r.plans[0].items, "2026-11-02");
   assert.ok(text.includes("DTSTART;TZID=Asia/Hong_Kong:20261105T160000"));
   assert.ok(text.includes("DTEND;TZID=Asia/Hong_Kong:20261105T175000"));
-  assert.ok(text.includes("[PDF snapshot]"));
+  assert.ok(text.includes("ACCT 2010"));
+  assert.ok(!text.includes("PDF snapshot"));
   assert.ok(!text.includes("RRULE:"));
   assert.throws(
     () => calendarSnapshot(r.plans[0].items, "2026-11-03"),

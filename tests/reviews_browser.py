@@ -1,0 +1,91 @@
+"""Exercise the actual prepared reviews in the built website."""
+import json,os,re
+from pathlib import Path
+from playwright.sync_api import sync_playwright,expect
+
+base=os.environ.get('BASE_URL','http://127.0.0.1:4173/')
+out=Path(os.environ.get('EVIDENCE_DIR','/tmp/coursepilot-review-evidence'));out.mkdir(parents=True,exist_ok=True)
+checks=[]
+def passed(name):checks.append(name);print('PASS:',name,flush=True)
+
+with sync_playwright() as p:
+ options={'executable_path':os.environ.get('CHROMIUM_PATH','/usr/bin/chromium'),'headless':True,'args':['--no-sandbox']}
+ if base.startswith('https://') and os.environ.get('HTTPS_PROXY'):options['proxy']={'server':os.environ['HTTPS_PROXY']}
+ browser=p.chromium.launch(**options)
+ context=browser.new_context(viewport={'width':1440,'height':1000},reduced_motion='reduce')
+ page=context.new_page();errors=[];requests=[]
+ page.on('pageerror',lambda e:errors.append(str(e)))
+ page.on('request',lambda r:requests.append(r.url))
+ page.goto(base,wait_until='networkidle')
+ assert not any('/reviews/' in url for url in requests)
+ assert not re.search(r'\bOCR\b|PDF snapshot|review snapshot',page.locator('body').inner_text(),re.I)
+ expect(page.locator('.course-data-footer')).to_contain_text('22:30')
+ passed('Prepared reviews load by course; normal labels and UTC+8 update time are visible')
+ search=page.get_by_role('textbox',name='Search uploaded courses')
+ def open_course(code):
+  search.fill(code);page.locator('.course-review-link').first.click()
+  expect(page.get_by_role('dialog')).to_be_visible()
+ open_course('COMP1023')
+ expect(page.locator('.review-overview')).to_contain_text('121')
+ expect(page.locator('.review-rating-grid article')).to_have_count(4)
+ expect(page.locator('.review-rating-grid article').nth(1).locator('.review-grade')).to_have_text('A-')
+ expect(page.locator('.anonymous-review')).to_have_count(8)
+ assert 'By RG VOLVO on' not in page.get_by_role('dialog').inner_text()
+ page.locator('.anonymous-review').first.get_by_text('展开这条评价',exact=True).click()
+ assert page.locator('.review-full-text[open] section').count()>0
+ passed('Course detail shows summary, four actual letter grades and expandable anonymous reviews')
+ first=page.locator('.anonymous-review').first.inner_text()
+ page.get_by_role('button',name='下一页评价',exact=True).click()
+ assert page.locator('.anonymous-review').first.inner_text()!=first
+ teacher=page.get_by_role('combobox',name='按教师筛选评价')
+ name=teacher.locator('option').nth(1).get_attribute('value') or teacher.locator('option').nth(1).inner_text()
+ teacher.select_option(label=name)
+ for card in page.locator('.anonymous-review').all():assert name in card.locator('header').inner_text()
+ teacher.select_option('all')
+ page.get_by_role('textbox',name='搜索评价内容').fill('nonexistent-exact-phrase-zz999')
+ expect(page.locator('.anonymous-review')).to_have_count(0)
+ expect(page.locator('.review-comments')).to_contain_text('没有符合条件的评价')
+ page.get_by_role('textbox',name='搜索评价内容').fill('')
+ page.get_by_role('combobox',name='评价排序').select_option('helpful')
+ data=json.loads((Path(__file__).parents[1]/'public/reviews/COMP1023.json').read_text())
+ top=max(r['helpful'] for r in data['reviews'])
+ expect(page.locator('.anonymous-review').first.locator('footer')).to_contain_text(str(top))
+ passed('Anonymous review pagination, teacher filtering, empty search and helpful ordering work')
+ page.locator('.review-overview .review-basis > summary').click()
+ page.locator('.review-basis blockquote button').first.click()
+ expect(page.locator('.review-evidence-filter')).to_be_visible()
+ assert 0<page.locator('.anonymous-review').count()<=2
+ page.get_by_role('button',name='查看所有评价',exact=True).click()
+ expect(page.locator('.anonymous-review')).to_have_count(8)
+ page.locator('.course-class-sections > summary').click()
+ expect(page.locator('.real-section-records')).to_contain_text('Room:')
+ assert not re.search(r'\bOCR\b|PDF snapshot|review snapshot',page.get_by_role('dialog').inner_text(),re.I)
+ page.locator('.course-class-sections > summary').click()
+ page.locator('.modal').evaluate('(el)=>el.scrollTop=0')
+ page.locator('.modal').screenshot(path=str(out/'reviews-desktop.png'))
+ passed('Summary evidence opens the corresponding comments; course section labels omit collection terminology')
+ page.keyboard.press('Escape');open_course('ACCT3030')
+ expect(page.get_by_role('dialog')).to_contain_text('No Review Published yet~')
+ assert page.locator('.review-rating-grid').count()==0
+ page.keyboard.press('Escape');open_course('ISOM4780')
+ expect(page.locator('.review-rating-grid article')).to_have_count(4)
+ expect(page.get_by_role('dialog')).to_contain_text('暂无可展示的完整评价正文')
+ assert 'No Review Published yet~' not in page.get_by_role('dialog').inner_text()
+ passed('Unavailable courses show the requested empty state; ratings-only courses retain their grades')
+ page.keyboard.press('Escape')
+ page.route('**/reviews/MATH1013.json',lambda route:route.fulfill(status=503,body='Temporary failure'))
+ open_course('MATH1013')
+ expect(page.get_by_role('alert')).to_contain_text('评价暂时加载失败')
+ page.unroute('**/reviews/MATH1013.json')
+ page.get_by_role('button',name='重新加载评价',exact=True).click()
+ expect(page.locator('.review-overview')).to_contain_text('1,145')
+ passed('A loading failure is distinct from no reviews and can be retried')
+ page.keyboard.press('Escape');page.reload();open_course('COMP1023')
+ expect(page.locator('.anonymous-review')).to_have_count(8)
+ assert not page.evaluate('document.documentElement.scrollWidth>innerWidth')
+ assert page.locator('.modal').evaluate('(el)=>el.scrollWidth<=el.clientWidth+1')
+ assert not errors,errors
+ passed('Reviews persist after reload and the desktop web layout has no overflow or runtime errors')
+ (out/'results.json').write_text(json.dumps({'passed':len(checks),'checks':checks,'errors':errors,'target':base},indent=2))
+ browser.close()
+print(f'{len(checks)} review browser checks passed')
