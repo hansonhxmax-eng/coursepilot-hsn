@@ -7,6 +7,6 @@ codes={'schemaVersion':1,'term':data['term'],'courseCodes':[c['id'] for c in dat
 (root/'tools/ustspace/coursepilot-course-codes.json').write_text(json.dumps(codes,indent=2)+'\n')
 (root/'public/collector').mkdir(exist_ok=True)
 with zipfile.ZipFile(root/'public/collector/CoursePilot-collector.zip','w',zipfile.ZIP_DEFLATED) as z:
- for name in ['collect.py','requirements.txt','README.md','coursepilot-course-codes.json','Start-Windows.bat']:
+ for name in ['collect.py','requirements.txt','README.md','coursepilot-course-codes.json','Start-Windows.bat','Start-All-Windows.bat']:
   z.write(root/'tools/ustspace'/name,Path('CoursePilot-collector')/name)
 print('Packaged local collector:',len(codes['courseCodes']),'clear codes;',len(codes['excluded']),'excluded for verification.')

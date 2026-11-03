@@ -64,7 +64,6 @@ function meetingInWeek(s, week) {
 function sessionText(s) {
   return `${WEEK[s.day]} ${timeLabel(s.start)}–${timeLabel(s.end)}${s.dateStart ? ` (${s.dateStart} → ${s.dateEnd})` : ""}`;
 }
-const sourceLink = (s) => `./${s.sourceUrl}`;
 export default function ScheduleWorkspace() {
   const [search, setSearch] = useState(""),
     [department, setDepartment] = useState("all"),
@@ -278,13 +277,6 @@ export default function ScheduleWorkspace() {
             are unknown.
           </p>
         </div>
-        <a
-          href="./schedules/AISC.pdf"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          View a source <ArrowUpRight size={14} />
-        </a>
       </div>
       <div className="real-stats">
         {[
@@ -301,9 +293,9 @@ export default function ScheduleWorkspace() {
         <div className="stat-annotation">
           <ShieldCheck size={19} />
           <span>
-            Original PDF links
+            Course data only
             <br />
-            on every course
+            source files kept offline
           </span>
         </div>
       </div>
@@ -350,7 +342,7 @@ export default function ScheduleWorkspace() {
             value={department}
             onChange={(e) => setDepartment(e.target.value)}
           >
-            <option value="all">All 11 departments</option>
+            <option value="all">All {snapshot.counts.sources} departments</option>
             {snapshot.sources.map((s) => (
               <option key={s.department} value={s.department}>
                 {s.department}
@@ -413,15 +405,6 @@ export default function ScheduleWorkspace() {
                 readable times
               </p>
               <div className="real-course-bottom">
-                <a
-                  href={sourceLink(c)}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <FileText size={12} />
-                  {c.sourceFile} · p{c.sourcePages[0]}
-                  <ArrowUpRight size={12} />
-                </a>
                 <button
                   aria-label={`${selected.includes(c.id) ? "Remove" : "Add"} ${c.code}`}
                   className={`real-add ${selected.includes(c.id) ? "is-added" : ""}`}
@@ -786,14 +769,6 @@ export default function ScheduleWorkspace() {
                         <p key={s.id}>
                           <span>{s.label}</span>
                           {s.sessions.map(sessionText).join(" · ")}
-                          <a
-                            href={sourceLink(s)}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            aria-label={`Source for ${course.code} ${s.label}`}
-                          >
-                            <FileText size={12} />
-                          </a>
                         </p>
                       ))}
                     </div>
@@ -930,35 +905,11 @@ export default function ScheduleWorkspace() {
         ))}
       </section>
       <details className="real-source-manifest">
-        <summary>
-          <FileText size={15} />
-          Source files and OCR limitations
-        </summary>
-        <p>
-          All files were uploaded on {snapshot.uploadedOn}. The original capture
-          time is unknown. {snapshot.counts.consistentSeatSections} section rows
-          have all four numeric fields transcribed with consistent arithmetic;
-          other seat counts are unknown. Numeric consistency does not verify
-          current availability. Only literal CC26 tags recognized in OCR are
-          highlighted; absent tags may reflect OCR omissions. Original PDFs are
-          provided for checking, with PDF metadata removed.
-        </p>
-        <div>
-          {snapshot.sources.map((s) => (
-            <a
-              key={s.file}
-              href={`./schedules/${s.file}`}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              {s.file}
-              <span>
-                {s.pages} pages · {s.courseHeaders} detected courses
-              </span>
-              <ArrowUpRight size={13} />
-            </a>
-          ))}
-        </div>
+        <summary>Data provenance and OCR limitations</summary>
+        <p>Course data was transcribed from user-supplied schedule snapshots.
+          Original files are kept offline and are not available on this website.
+          Capture date and current availability are unknown. OCR may contain errors;
+          verify course details and section pairing in the official SIS before enrolling.</p>
       </details>
       {detail && (
         <div className="modal-backdrop" onClick={() => setDetail(null)}>
@@ -984,20 +935,10 @@ export default function ScheduleWorkspace() {
             <h2 id="real-course-title">{detail.title}</h2>
             <p className="real-modal-notice">
               OCR transcription, not a live SIS record. Review scores, workload
-              and assessment rules are unknown. Compare the source PDF before
+              and assessment rules are unknown. Verify details in the official SIS before
               using a section.
             </p>
             <div className="real-modal-actions">
-              <a
-                className="real-outline"
-                href={sourceLink(detail)}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <FileText size={14} />
-                Original PDF · p{detail.sourcePages[0]}
-                <ArrowUpRight size={12} />
-              </a>
               <button className="primary" onClick={() => select(detail.id)}>
                 {selected.includes(detail.id)
                   ? "Remove from selection"
@@ -1015,15 +956,6 @@ export default function ScheduleWorkspace() {
                     <span>
                       #{s.classNumber || "unknown"} · {s.kind}
                     </span>
-                    <a
-                      href={sourceLink(s)}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      aria-label={`View source for section ${s.label}`}
-                    >
-                      <FileText size={14} />
-                      <ArrowUpRight size={12} />
-                    </a>
                   </div>
                   <p className="section-time">
                     {s.sessions.length

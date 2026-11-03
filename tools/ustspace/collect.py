@@ -2,7 +2,7 @@
 No passwords, request headers, cookies, API tokens or HAR files are exported.
 Actual USTSpace compatibility requires a first-course check on the user's machine.
 """
-import argparse,json,re,time,sys
+import argparse,json,re,time,sys,shutil,itertools
 from datetime import datetime,timezone
 from pathlib import Path
 from urllib.parse import urlparse,urlunparse,parse_qsl,urlencode,urljoin
@@ -10,7 +10,7 @@ from urllib.robotparser import RobotFileParser
 
 KIND='ustspace-visible-snapshots'
 CODE=re.compile(r'^[A-Z]{4}\d{4}[A-Z]?$')
-REDACT_EMAIL=re.compile(r'[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}',re.I)
+REDACT_EMAIL=re.compile(r'(?<![A-Z0-9._%+-])[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}',re.I)
 class AccessStop(Exception):pass
 class CourseUnavailable(Exception):pass
 
@@ -95,7 +95,7 @@ def next_control(page,pattern):
 
 def load_more(page,args):
  previous='';stable=0
- for _ in range(args.max_scrolls):
+ for _ in (range(args.max_scrolls) if args.max_scrolls else itertools.count()):
   check_access(page)
   button=next_control(page,re.compile(r'^(?:load more(?: reviews)?|show more reviews|more reviews|載入更多(?:評價)?|加载更多(?:评价)?|更多評價|更多评价)$',re.I))
   if button:button.click()
@@ -109,20 +109,18 @@ def load_more(page,args):
 
 def collect_current(page,code,args):
  chunks=[];pages=0;seen=set()
- for index in range(args.max_pages):
+ for index in (range(args.max_pages) if args.max_pages else itertools.count()):
   check_access(page)
   initial=visible_text(page,args.content_selector,code)
   if initial in seen:break
   seen.add(initial);chunks=add_chunk(chunks,initial)
   load_more(page,args)
   chunks=add_chunk(chunks,visible_text(page,args.content_selector,code));pages+=1
-  if sum(map(len,chunks))>240000:break
   button=next_control(page,re.compile(r'^(?:next(?: page)?|下一頁|下一页|下頁|下页)$',re.I))
   if not button:break
   button.click();page.wait_for_timeout(args.delay*1000)
  text='\n\n--- visible page snapshot ---\n\n'.join(chunks)
- if len(text)>250000:text=text[:250000]
- return {'courseCode':code,'status':'captured','sourceUrl':source_url(page.url),'capturedAt':utc(),'text':text,'visiblePagesCaptured':pages,'completeness':'visible-content-only','note':'Rendered page evidence only; may include course descriptions and navigation. Pagination/scroll limits and website visibility mean this is not guaranteed to contain all reviews. No rating or syllabus tags were inferred.'}
+ return {'courseCode':code,'status':'captured','sourceUrl':source_url(page.url),'capturedAt':utc(),'text':text,'visiblePagesCaptured':pages,'completeness':'visible-content-only','note':'Rendered page evidence only; may include course descriptions and navigation. Website visibility and any optional limits mean this is not guaranteed to contain all reviews. No rating or syllabus tags were inferred.'}
 
 def navigate_course(page,code,args,template):
  if template:
@@ -152,6 +150,23 @@ def navigate_course(page,code,args,template):
   page.wait_for_timeout(args.delay*1000);check_access(page,response.status if response else None)
  else:link.click();page.wait_for_timeout(args.delay*1000);check_access(page)
 
+def collect_courses(page,codes,anchor,args,template,robots,rows,excluded,output):
+ for index,code in enumerate(codes):
+  if not robots.can_fetch('CoursePilotResearchSnapshot',page.url if code==anchor else render_template(template,code) if template else 'https://ust.space/review'):
+   raise AccessStop('robots.txt disallows the requested path; collection stopped.')
+  try:
+   if code!=anchor:navigate_course(page,code,args,template)
+   if not robots.can_fetch('CoursePilotResearchSnapshot',page.url):raise AccessStop('robots.txt disallows the observed course path; collection stopped.')
+   record=collect_current(page,code,args);rows[:]=[r for r in rows if r['courseCode']!=code];rows.append(record)
+   print(code+': captured visible page evidence (not a verified review count).',flush=True)
+  except AccessStop:raise
+  except CourseUnavailable as e:
+   rows[:]=[r for r in rows if r['courseCode']!=code];rows.append({'courseCode':code,'status':'unavailable','reason':str(e),'capturedAt':utc()});print(code+': unavailable; recorded without invented data.',flush=True)
+  except Exception as e:
+   rows[:]=[r for r in rows if r['courseCode']!=code];rows.append({'courseCode':code,'status':'failed','reason':type(e).__name__,'capturedAt':utc()});print(code+': failed ('+type(e).__name__+').',flush=True)
+   raise AccessStop('Unexpected page error; partial results saved. Check website structure before retrying.')
+  save(output,rows,excluded,None);time.sleep(args.delay)
+
 def partition_rows(rows,max_bytes=8*1024*1024):
  parts=[];current=[];size=0
  for row in rows:
@@ -175,22 +190,45 @@ def save(output,rows,excluded,stopped):
    document['importParts'].append(path.name)
  temporary=output.with_suffix('.tmp');temporary.write_text(json.dumps(document,ensure_ascii=False,indent=2),encoding='utf-8');temporary.replace(output)
 
+def resume_rows(output,allowed):
+ if not output.exists():return []
+ value=json.loads(output.read_text(encoding='utf-8-sig'))
+ if not isinstance(value,dict) or value.get('schemaVersion')!=1 or value.get('kind')!=KIND or not isinstance(value.get('courses'),list):
+  raise ValueError('Invalid resume file; original output is unchanged.')
+ rows=value['courses'];seen=set()
+ for row in rows:
+  if not isinstance(row,dict) or row.get('courseCode') not in allowed or row.get('courseCode') in seen or row.get('status') not in ('captured','unavailable','failed'):
+   raise ValueError('Unknown, duplicate or invalid resume record; original output is unchanged.')
+  if row['status']=='captured' and (not isinstance(row.get('text'),str) or not row['text'].strip() or not official_url(row.get('sourceUrl',''))):
+   raise ValueError('Invalid captured resume record; original output is unchanged.')
+  seen.add(row['courseCode'])
+ return rows
+
+def pending_codes(codes,rows,retry_unavailable=False):
+ done={r['courseCode'] for r in rows if r['status']=='captured' or r['status']=='unavailable' and not retry_unavailable}
+ return [code for code in codes if code not in done]
+
 def main():
  ap=argparse.ArgumentParser(description=__doc__)
  ap.add_argument('--courses',default='coursepilot-course-codes.json');ap.add_argument('--output',default='ustspace-snapshots.json');ap.add_argument('--profile',default='.ustspace-local-session')
- ap.add_argument('--limit',type=int,default=3,help='First-run cap. Use 0 for all supplied course codes only after checking the three-course output.')
- ap.add_argument('--delay',type=float,default=4);ap.add_argument('--max-scrolls',type=int,default=8);ap.add_argument('--max-pages',type=int,default=20)
+ ap.add_argument('--limit',type=int,default=0,help='Optional course limit; 0 (default) processes the full supplied list.')
+ ap.add_argument('--delay',type=float,default=4);ap.add_argument('--max-scrolls',type=int,default=0);ap.add_argument('--max-pages',type=int,default=0)
+ ap.add_argument('--resume',action='store_true');ap.add_argument('--retry-unavailable',action='store_true')
  ap.add_argument('--content-selector',default='main');ap.add_argument('--search-selector');ap.add_argument('--url-template');ap.add_argument('--manual',action='store_true');ap.add_argument('--channel',default=None)
  args=ap.parse_args()
- if args.limit<0 or args.delay<3 or not 1<=args.max_pages<=100 or not 1<=args.max_scrolls<=50:ap.error('limit must be non-negative; delay >=3 seconds; pages 1–100; scrolls 1–50.')
+ if args.limit<0 or args.delay<3 or args.max_pages<0 or args.max_scrolls<0:ap.error('Limits must be non-negative (0 means unlimited); delay >=3 seconds.')
  codes,excluded=codes_from(args.courses)
  if not codes:ap.error('No unambiguous course codes were supplied.')
+ output=Path(args.output).resolve();stopped=None
+ try:rows=resume_rows(output,set(codes)) if args.resume else []
+ except (ValueError,OSError) as e:ap.error(str(e))
+ anchor=codes[0];total=len(codes);codes=pending_codes(codes,rows,args.retry_unavailable)
  if args.limit:codes=codes[:args.limit]
- output=Path(args.output).resolve();rows=[];stopped=None
  if output.exists():
   backup=output.with_name(output.stem+'.backup-'+datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%S%fZ')+output.suffix)
-  output.replace(backup);print('Previous output preserved as '+backup.name,flush=True)
- print(f'{len(codes)} course(s) selected; {len(excluded)} invalid code(s) skipped. First course: {codes[0]}',flush=True)
+  shutil.copy2(output,backup);print('Previous output copied to '+backup.name,flush=True)
+ print(f'{total} courses; {len(codes)} pending; {len(rows)} previous record(s) retained.',flush=True)
+ if not codes:print('No pending courses. Existing output retained.');return 0
  print('Only collect pages your account may normally access, in accordance with the site rules. This tool does not bypass access controls.',flush=True)
  from playwright.sync_api import sync_playwright
  with sync_playwright() as p:
@@ -201,8 +239,8 @@ def main():
   try:
    page.goto('https://ust.space/review',wait_until='domcontentloaded',timeout=45000)
    print('\nIn the opened browser, log in yourself. Do not paste credentials into this terminal or chat.',flush=True)
-   input(f'Open the actual review-detail page for {codes[0]}, then press Enter here: ')
-   check_access(page);visible_text(page,args.content_selector,codes[0])
+   input(f'Open the actual review-detail page for {anchor}, then press Enter here: ')
+   check_access(page);visible_text(page,args.content_selector,anchor)
    def observe(response):
     if official_url(response.url) and response.status in (401,403,429) and response.request.resource_type in ('document','xhr','fetch'):
      page._collector_blocked_status=response.status
@@ -212,25 +250,10 @@ def main():
    if response.status==200:robots.parse(response.text().splitlines())
    elif response.status==404:robots.parse([])
    else:raise AccessStop(f'Cannot establish robots policy (HTTP {response.status}); automatic collection stopped.')
-   template=args.url_template or (None if args.manual else derive_template(page.url,codes[0]))
+   template=args.url_template or (None if args.manual else derive_template(page.url,anchor))
    if template and not ('{course}' in template or '{subject}' in template and '{number}' in template):raise ValueError('URL template must contain {course}, or both {subject} and {number}.')
    if not template and not args.manual:print('No course route template was observed; subsequent courses will use visible search controls. If unavailable, use --manual.',flush=True)
-   for index,code in enumerate(codes):
-    if not robots.can_fetch('CoursePilotResearchSnapshot',page.url if index==0 else render_template(template,code) if template else 'https://ust.space/review'):
-     raise AccessStop('robots.txt disallows the requested path; collection stopped.')
-    try:
-     if index:navigate_course(page,code,args,template)
-     if not robots.can_fetch('CoursePilotResearchSnapshot',page.url):raise AccessStop('robots.txt disallows the observed course path; collection stopped.')
-     record=collect_current(page,code,args);rows.append(record)
-     print(code+': captured visible page evidence (not a verified review count).',flush=True)
-    except AccessStop:raise
-    except CourseUnavailable as e:
-     rows.append({'courseCode':code,'status':'unavailable','reason':str(e),'capturedAt':utc()});print(code+': unavailable; recorded without invented data.',flush=True)
-     if sum(r['status']=='unavailable' for r in rows[-3:])==3:raise AccessStop('Three consecutive courses unavailable; check the website structure before continuing.')
-    except Exception as e:
-     rows.append({'courseCode':code,'status':'failed','reason':type(e).__name__,'capturedAt':utc()});print(code+': failed ('+type(e).__name__+').',flush=True)
-     raise AccessStop('Unexpected page error; partial results saved. Check website structure before retrying.')
-    save(output,rows,excluded,None);time.sleep(args.delay)
+   collect_courses(page,codes,anchor,args,template,robots,rows,excluded,output)
   except KeyboardInterrupt:stopped='Stopped by user.'
   except (AccessStop,CourseUnavailable,ValueError) as e:stopped=str(e);print('STOP: '+stopped,flush=True)
   except Exception as e:stopped='Setup/navigation failed: '+type(e).__name__;print('STOP: '+stopped,flush=True)

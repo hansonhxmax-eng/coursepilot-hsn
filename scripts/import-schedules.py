@@ -124,7 +124,7 @@ def build(root,files):
       part=' '.join(w['text'] for w in ws if a-15<=w['left']<b-15)
       if part:section[key].append(part)
   raw=Path(source['path']).read_bytes()
-  source_meta.append({'department':dept,'file':dept+'.pdf','pages':len(tsvs),'originalSha256':hashlib.sha256(raw).hexdigest(),'publishedSha256':hashlib.sha256((Path('public/schedules')/(dept+'.pdf')).read_bytes()).hexdigest() if (Path('public/schedules')/(dept+'.pdf')).exists() else None,'capturedAt':None,'uploadedOn':'2026-11-03','courseHeaders':len(headers)})
+  source_meta.append({'department':dept,'file':dept+'.pdf','pages':len(tsvs),'originalSha256':hashlib.sha256(raw).hexdigest(),'capturedAt':None,'uploadedOn':'2026-11-03','courseHeaders':len(headers)})
  for c in courses:
   original_id=c['id']
   for s in c['sections']:
@@ -138,12 +138,12 @@ def build(root,files):
     s['label']=f"LA{int(s['classNumber'])-3009:02d}"
     s['issues']=[x for x in s['issues'] if x!='Unclear section label']
     s['verifiedFields']=['label']
+   s['classNumber']=corrections.get('sectionClassNumbers',{}).get(c['id']+':'+str(s['classNumber']),s['classNumber'])
    s['id']=c['id']+'-'+s['label']+'-'+(s['classNumber'] or str(c['sections'].index(s)+1))
    s['rawTime']=' '.join(s.pop('rawTimeParts'));s['room']=' '.join(s.pop('rawRoomParts'));s['instructor']=' '.join(s.pop('rawInstructorParts'))
    s['sessions'],issues=sessions(s['rawTime']);s['issues']+=issues
    s['scheduleReadable']=bool(s['sessions']) and not issues and 'Unclear section label' not in s['issues'] and s['kind']!='unknown' and not c['issues']
-   s['sourceUrl']=f"schedules/{s['sourceFile']}#page={s['sourcePages'][0]}"
-  checked_code=corrections['courseCodes'].get(c['id'])
+  checked_code=corrections.get('courseCodesBySource',{}).get(c['sourceFile']+':'+str(c['sourcePages'][0])+':'+c['id']) or corrections['courseCodes'].get(c['id'])
   if checked_code:
    c['id']=checked_code;c['code']=checked_code[:4]+' '+checked_code[4:]
    c['issues']=[x for x in c['issues'] if x!='Course code needs visual verification'];c['verifiedFields']=['code']
@@ -151,7 +151,6 @@ def build(root,files):
     section['id']=section['id'].replace(original_id+'-',checked_code+'-',1)
     if not [i for i in section['issues'] if i!='Seat counts incomplete or inconsistent; not treated as current availability'] and section['sessions'] and section['kind']!='unknown':section['scheduleReadable']=True
   if not c['sections']:c['issues'].append('No section rows recognized')
-  c['sourceUrl']=f"schedules/{c['sourceFile']}#page={c['sourcePages'][0]}"
  counts={'sources':len(files),'pages':sum(s['pages'] for s in source_meta),'courses':len(courses),'sections':len(all_sections),'readableSections':sum(s['scheduleReadable'] for s in all_sections),'consistentSeatSections':sum(s['numericStatus']=='ocr-consistent' for s in all_sections),'commonCoreTaggedCourses':sum(c['commonCore2026'] for c in courses)}
  return {'schemaVersion':1,'term':'2026-27 Fall','mode':'uploaded-pdf-snapshot','capturedAt':None,'uploadedOn':'2026-11-03','notice':'OCR transcription of user-uploaded schedule screenshots, not a live SIS connection. Capture date and current availability are unknown. Verify original PDFs, section pairing, eligibility and current SIS before enrolling. Attendance, quizzes, group work and reviews are not supplied.','sources':source_meta,'counts':counts,'courses':courses}
 if __name__=='__main__':

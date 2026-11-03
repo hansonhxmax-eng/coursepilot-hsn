@@ -49,4 +49,32 @@ class CollectorTests(unittest.TestCase):
    with self.assertRaises(m.AccessStop):m.check_access(Page(),status)
   page=Page();page._collector_blocked_status=429
   with self.assertRaises(m.AccessStop):m.check_access(page)
+ def test_resume_preserves_eight_captured_and_six_unavailable(self):
+  codes=['ACCT'+str(2000+i) for i in range(16)]+['MATH1013']
+  rows=[{'courseCode':code,'status':'captured','text':'fixture '+code,'sourceUrl':'https://ust.space/review/'+code} for code in codes[:8]]
+  rows += [{'courseCode':code,'status':'unavailable','reason':'fixture'} for code in codes[8:14]]
+  with tempfile.TemporaryDirectory() as t:
+   path=Path(t)/'out.json';m.save(path,rows,[],None);before=path.read_bytes()
+   retained=m.resume_rows(path,set(codes));self.assertEqual(retained,rows)
+   self.assertEqual(m.pending_codes(codes,retained),codes[14:])
+   self.assertEqual(m.pending_codes(codes,retained,True),codes[8:])
+   self.assertEqual(path.read_bytes(),before)
+ def test_invalid_resume_is_rejected_without_overwrite(self):
+  with tempfile.TemporaryDirectory() as t:
+   path=Path(t)/'out.json'
+   for rows in [[{'courseCode':'BAD','status':'captured'}],[{'courseCode':'ACCT2010','status':'unavailable'}]*2]:
+    m.save(path,rows,[],None);before=path.read_bytes()
+    with self.assertRaises(ValueError):m.resume_rows(path,{'ACCT2010'})
+    self.assertEqual(path.read_bytes(),before)
+ def test_full_zip_contains_launchers_and_544_unique_codes(self):
+  import zipfile
+  root=Path(__file__).parents[1]
+  with zipfile.ZipFile(root/'public/collector/CoursePilot-collector.zip') as z:
+   names=['collect.py','requirements.txt','README.md','coursepilot-course-codes.json','Start-Windows.bat','Start-All-Windows.bat']
+   self.assertEqual(set(z.namelist()),{'CoursePilot-collector/'+n for n in names})
+   for n in names:self.assertEqual(z.read('CoursePilot-collector/'+n),(root/'tools/ustspace'/n).read_bytes())
+   codes=json.loads(z.read('CoursePilot-collector/coursepilot-course-codes.json'))['courseCodes']
+   self.assertEqual(len(set(codes)),544);self.assertEqual(sum(c.startswith('MATH') for c in codes),82)
+   launcher=z.read('CoursePilot-collector/Start-Windows.bat')
+   self.assertIn(b'--limit 0 --resume',launcher)
 if __name__=='__main__':unittest.main(verbosity=2)

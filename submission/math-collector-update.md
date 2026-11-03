@@ -1,0 +1,9 @@
+# MATH catalog, offline sources and collector resume
+
+The catalog includes 544 courses across 12 departments: 82 MATH courses were transcribed from the 18-page supplied schedule, preserving all 76 COMP codes. Total: 135 source pages and 1,443 section records. Narrow source-specific corrections distinguish MATH6907O and MATH6907Q, correct MATH4052 and MATH1003 class 3668. OCR remains provisional; current availability and review attributes are unknown.
+
+Uploaded PDFs are excluded from public/ and the production build. Course cards, section plans, detail dialogs and the source area have no PDF links. Original files are retained outside the repository's published assets. Previously published Git history is not rewritten.
+
+The complete collector ZIP includes both Windows launchers and 544 unique course codes. Default collection has no course/page/scroll cap or text truncation. Unavailable courses are recorded and skipped without a consecutive-failure stop. Resume preserves captured/unavailable records, retries failures, copies a backup and rejects malformed or duplicate records before writing. Access restrictions and unexpected exceptions still stop with partial results saved.
+
+Current local validation: 36 JavaScript tests, 14 Python helper tests, production build, 19 real-workspace browser checks and 20 synthetic browser checks pass. Browser collector fixtures exercise content beyond 260k characters, unlimited pagination, six consecutive unavailable courses followed by MATH, retention of 8 captured + 6 unavailable records, and HTTP 429 stopping. Actual authenticated USTSpace and Windows execution require the owner's machine.

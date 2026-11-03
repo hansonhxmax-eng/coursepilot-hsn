@@ -46,6 +46,14 @@
     "CENG49804": "CENG4980A",
     "ELEC69004": "ELEC6900J",
     "ACCT69704": "ACCT6970A",
-    "ACCT79001": "ACCT7900I"
+    "ACCT79001": "ACCT7900I",
+    "MATH4082": "MATH4052"
+  },
+  "courseCodesBySource": {
+    "MATH.pdf:15:MATH69070": "MATH6907O",
+    "MATH.pdf:16:MATH69070": "MATH6907Q"
+  },
+  "sectionClassNumbers": {
+    "MATH1003:8668": "3668"
   }
 }

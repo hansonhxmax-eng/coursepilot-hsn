@@ -24,7 +24,7 @@ npm run preview -- --port 4173
 
 ## Real uploaded schedules (default workspace)
 
-- 11 image-only PDFs / 117 pages → 462 detected courses / 1,168 section records. 980 records have parseable times and labels; every course and section links to its source PDF. Original capture date is unknown. These are OCR transcriptions, not a live SIS connection or certified extraction accuracy.
+- 12 offline PDFs / 135 pages → 544 detected courses / 1,443 section records. 1,206 records have parseable times and labels; source files are kept offline and are not published on this website. Original capture date is unknown. These are OCR transcriptions, not a live SIS connection or certified extraction accuracy.
 - Department search, pagination and literal CC26-tag filtering. The files also contain major and postgraduate courses; departments are never converted into Common Core domains or eligibility claims.
 - Select up to six courses, lock sections and generate up to three provisional lecture/tutorial/lab schedules. Date-limited sessions are handled, TBA/ambiguous components are excluded, and explicit section-matching requirements block automatic pairing until verified.
 - Timetable ranking uses campus-day count and early meetings only. Attendance, quizzes, groups, ratings and workload remain unknown. Enabling unsupported hard constraints returns no plan.
@@ -53,7 +53,7 @@ See [real-data validation and limitations](submission/real-data-validation.md), 
 
 The **Official sources** page and course details provide safe new-tab entry links and the SIS path. No institutional password is collected, login state is not inspected, and opening an external page is never presented as an authenticated connection. Codes in the synthetic preference demonstration may not correspond to actual offerings: verify official details independently.
 
-There is no hosted live scraper, institutional integration, trained NLP model, grade prediction, external notification delivery, background monitor, or automatic enrollment. The separately downloaded local collector reads permitted visible pages only after the owner logs in on their own computer; its real-site compatibility has not yet been verified. Seat updates and logs reset on reload; preferences and watched IDs persist only in the same browser. Course selections remain local; imported review text is not sent to a backend or GitHub. Static assets, including schedule PDFs, are publicly served by GitHub Pages. Third-party sites receive normal browser requests when explicitly opened. Review scores are sample fixtures, not verified student opinions.
+There is no hosted live scraper, institutional integration, trained NLP model, grade prediction, external notification delivery, background monitor, or automatic enrollment. The separately downloaded local collector reads permitted visible pages only after the owner logs in on their own computer; its real-site compatibility has not yet been verified. Seat updates and logs reset on reload; preferences and watched IDs persist only in the same browser. Course selections remain local; imported review text is not sent to a backend or GitHub. Static app assets are served by GitHub Pages; uploaded PDFs are excluded. Third-party sites receive normal browser requests when explicitly opened. Review scores are sample fixtures, not verified student opinions.
 
 ## Synthetic-mode ranking
 
@@ -69,7 +69,7 @@ Balanced scoring = rating/5 × 50 + (4 − weekly workload) × 10 + availability
 - [Raw unit-test evidence](submission/evidence/unit-results.txt)
 - [Raw browser-test evidence](submission/evidence/browser-results.txt)
 
-Final validation: 36 JavaScript tests, 11 Python collector helper tests, 18 real-workspace browser checkpoints, 20 synthetic-mode browser checkpoints, and a collector MOCK-browser test passed. See the validation document for the precise scope. No authenticated USTSpace collection or full-review-window uptime is claimed.
+Final validation: 36 JavaScript tests, 14 Python collector helper tests, 19 real-workspace browser checkpoints, 20 synthetic-mode browser checkpoints, and a collector MOCK-browser test passed. See the validation document for the precise scope. No authenticated USTSpace collection or full-review-window uptime is claimed.
 
 Optional browser suite (Python 3.12; Playwright must be installed separately):
 
@@ -95,9 +95,11 @@ This checkout is already isolated in the cloud task; no additional Git worktree 
 The curated JSON is committed at `src/schedules/uploaded.json`. To reproduce OCR for these specific Fall-2026 inputs, install PyMuPDF and the Tesseract executable, then run:
 
 ```sh
-python3 scripts/ocr-schedules.py --input-dir public/schedules --work-dir /tmp/coursepilot-schedules
+python3 scripts/ocr-schedules.py --input-dir /path/to/offline-schedules --work-dir /tmp/coursepilot-schedules
 python3 scripts/import-schedules.py --ocr-dir /tmp/coursepilot-schedules --manifest /tmp/coursepilot-schedules/files.json
 python3 scripts/package-collector.py
 ```
 
 Inspect the results and original PDFs before publishing. The parser and narrow corrections target this specific uploaded snapshot; they are not a general validated importer for another term or different page layout. Browser and collector tests are documented under `tests/`; the collector must be used on the account owner's machine, never by copying cookies or passwords into the cloud. Rebuild its downloadable ZIP with `python3 scripts/package-collector.py` after any tool/guide change.
+
+MATH and collector update: 82 MATH courses are included in the 544-code list. The Windows launcher processes the full list with automatic resume; unavailable records do not stop collection. Uploaded PDFs and all PDF links have been removed from the deployed site.

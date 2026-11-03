@@ -1,7 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import fs from "node:fs";
-import { createHash } from "node:crypto";
 import {
   REAL_DEFAULT,
   meetingsOverlap,
@@ -16,11 +15,11 @@ const data = JSON.parse(
 );
 const c = (id) => data.courses.find((x) => x.id === id);
 const chosen = ["ACCT2010", "ISOM1380", "AISC1000B"].map(c);
-test("all 11 PDF sources and 117 pages are accounted for, with unique courses and sections", () => {
-  assert.equal(data.sources.length, 11);
+test("all 12 offline sources and 135 pages are accounted for, with unique courses and sections", () => {
+  assert.equal(data.sources.length, 12);
   assert.equal(
     data.sources.reduce((n, s) => n + s.pages, 0),
-    117,
+    135,
   );
   assert.equal(
     new Set(data.courses.map((c) => c.id)).size,
@@ -268,15 +267,15 @@ test("unclassified components cannot be silently dropped from an otherwise reada
   assert.equal(result.plans.length, 0);
   assert.match(result.issues.join(), /Unclassified section component/);
 });
-test("every public source PDF matches the checksum recorded in provenance", () => {
+test("source files are excluded from public assets and MATH codes are unique", () => {
   for (const source of data.sources) {
-    const actual = fs.readFileSync(
-      new URL("../public/schedules/" + source.file, import.meta.url),
-    );
-    assert.ok(actual.subarray(0, 4).equals(Buffer.from("%PDF")));
-    assert.equal(
-      createHash("sha256").update(actual).digest("hex"),
-      source.publishedSha256,
-    );
+    assert.equal(fs.existsSync(new URL("../public/schedules/" + source.file, import.meta.url)), false);
+    assert.match(source.originalSha256, /^[a-f0-9]{64}$/);
   }
+  assert.equal(data.courses.length, 544);
+  assert.equal(data.courses.filter(c => c.department === "MATH").length, 82);
+  assert.equal(data.courses.filter(c => c.department === "COMP").length, 76);
+  assert.equal(c("MATH4052").title, "Partial Differential Equations");
+  assert.ok(c("MATH6907O")); assert.ok(c("MATH6907Q"));
+  assert.ok(c("MATH1003").sections.some(s => s.label === "L3" && s.classNumber === "3668"));
 });
