@@ -20,6 +20,7 @@ class ReviewTests(unittest.TestCase):
   for private in ['OriginalStudentHandle','learner@example.test','private-file.pdf','Mid-term Exam','Attendance']:
    self.assertNotIn(private,text)
   self.assertEqual(rows[0]['ratings'],dict(content='A',teaching='B',grading='C',workload='D'))
+  self.assertIn('[Email hidden]',rows[0]['sections']['content'])
   self.assertEqual(rows[0]['sections']['grading'],'')
   self.assertEqual(rows[0]['helpful'],3)
  def test_repeated_page_does_not_duplicate_a_review(self):
@@ -32,9 +33,14 @@ class ReviewTests(unittest.TestCase):
   self.assertFalse(m.parse_reviews(review().split('By Original')[0])[0])
   self.assertFalse(m.parse_reviews(review('No Comment').replace('Clear explanations.','No Comment').replace('Weekly assignments.','No Comment'))[0])
  def test_themes_count_reviews_once_and_reference_existing_evidence(self):
-  rows,_,_=m.parse_reviews(review('Practice practice past papers.'))
-  analysis=m.analyze(rows);topic=next(t for t in analysis['themes'] if t['id']=='practice')
-  self.assertEqual(topic['mentions'],1);self.assertEqual(topic['evidence'][0]['reviewId'],rows[0]['id'])
+  for body in ('Practice practice past papers.','每周安排时间练习，复习时再做一遍练习题。'):
+   with self.subTest(body=body):
+    rows,_,_=m.parse_reviews(review(body))
+    analysis=m.analyze(rows);topic=next(t for t in analysis['themes'] if t['id']=='practice')
+    self.assertEqual(topic['mentions'],1);self.assertEqual(topic['evidence'][0]['reviewId'],rows[0]['id'])
+    self.assertEqual(topic['label'],'Practice and revision')
+  for _,label,_,selection,study in m.TOPICS:
+   self.assertNotRegex(' '.join((label,selection,study)),r'[\u3400-\u9fff]')
  def test_course_mapping_and_aggregate_ratings_remain_separate(self):
   payload={'courses':[{'courseCode':'TEST1000','status':'captured','sourceUrl':'https://ust.space/review/TEST1000','capturedAt':'2026-11-03T14:30:00Z','text':review()+'99 Reviews\nCONTENT\nB+\nTEACHING\nA-\nGRADING\nB\nWORKLOAD\nC+\nWrite Review'}]}
   value,_=m.prepare(payload,{'courses':[{'id':'TEST1000'}]})

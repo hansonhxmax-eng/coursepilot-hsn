@@ -14,35 +14,35 @@ HEADER = re.compile(r'(?m)^(\d{4}-\d{2}\s+(?:Fall|Spring|Summer|Winter))\s*\n\s*
 FOOTER = re.compile(r'(?m)^By .+ on ([A-Z][a-z]{2} \d{1,2}, \d{4})\s*$')
 AGGREGATE = re.compile(r'(\d+) Reviews?\s+'+RATINGS+r'\s+(?:Write|Edit) Review')
 TOPICS = [
- ('practice','练习与复习',r'practi[cs]e|problem sets?|past papers?|pastpaper|操題|操题|刷题|刷題|練習|练习|复习|複習',
-  '如果希望靠持续练习提升表现，可重点比较评价中提到的练习方式和时间投入。',
-  '每周整理错题与概念，先独立完成练习，再用不同题型检验理解。'),
- ('exams','考试与评分',r'\bexam\b|\bexams\b|mid.?term|\bfinal\b|考试|考試|期中|期末',
-  '选课前核对当期考试权重和题型，评估它与同学期其他课程的考试安排。',
-  '尽早确认考试范围与题型，复习时做限时练习，不只背熟已有答案。'),
- ('projects','作业与项目',r'assignments?|projects?|homework|作业|作業|專題|专题|大作业|大作業',
-  '把作业和项目放进整学期时间表，再决定是否与其他任务密集的课程同修。',
-  '拿到任务后先拆分里程碑，尽早做出可检查的初稿，预留修改时间。'),
- ('groups','小组协作',r'group.?mates?|group work|group project|team.?mates?|小组|小組|组员|組員|組隊|组队',
-  '如果在意小组合作体验，重点查看近期同教师评价，并确认当期的分组安排。',
-  '开始合作时明确分工、交付日期和检查点，定期核对每个人的进度。'),
- ('foundations','基础与入门',r'prerequisit|background|beginner|prior knowledge|基础|基礎|零基础|零基礎|入门|入門',
-  '先对照先修要求和自己的基础，避免只根据别人的“容易”就判断适合自己。',
-  '开课前用入门题检查基础，不熟悉的概念及时补齐，避免越积越多。'),
- ('coding','编程与调试',r'programming|\bcode\b|\bcoding\b|debug|python|\bc\+\+|编程|程式|写代码|寫代碼',
-  '如果编程经验较少，为实际写代码和调试留出时间，再评估同修负担。',
-  '亲自运行并修改例子，为自己的程序编写小测试，保留调试记录。'),
- ('participation','课堂参与',r'attendance|participation|pop quiz|出勤|签到|簽到|考勤|课堂参与|課堂參與',
-  '关注当期课堂参与和考勤说明；往届学生的经历不能直接代替本学期要求。',
-  '开课时确认参与分与考勤规则，把课堂活动和提交期限记进日历。'),
- ('reading','阅读与表达',r'reading|readings|essays?|presentations?|阅读|閱讀|论文|論文|汇报|匯報',
-  '如果本学期已有多门阅读或汇报课程，先比较各门课的交付时间再组合。',
-  '读材料时记录论点和依据；写作或汇报先列提纲，再检查表达与引用。'),
+ ('practice','Practice and revision',r'practi[cs]e|problem sets?|past papers?|pastpaper|操題|操题|刷题|刷題|練習|练习|复习|複習',
+  'If you learn best through regular practice, compare the study methods and time commitments described in the reviews.',
+  'Review mistakes and key concepts each week. Attempt problems independently, then try different question types to check your understanding.'),
+ ('exams','Exams and grading',r'\bexam\b|\bexams\b|mid.?term|\bfinal\b|考试|考試|期中|期末',
+  'Check the current exam formats and assessment weights, and consider how the exam schedule fits with your other courses.',
+  'Confirm the exam scope and format early. Practise under timed conditions and focus on understanding rather than memorising answers.'),
+ ('projects','Assignments and projects',r'assignments?|projects?|homework|作业|作業|專題|专题|大作业|大作業',
+  'Map assignments and projects across the semester before combining this course with other demanding courses.',
+  'Break each task into milestones, prepare an early draft, and leave time for feedback and revisions.'),
+ ('groups','Group work',r'group.?mates?|group work|group project|team.?mates?|小组|小組|组员|組員|組隊|组队',
+  'If group work matters to your choice, read recent reviews for the same instructor and confirm the current grouping arrangements.',
+  'Agree on responsibilities, deadlines, and checkpoints at the start. Check progress together regularly.'),
+ ('foundations','Background and prerequisites',r'prerequisit|background|beginner|prior knowledge|基础|基礎|零基础|零基礎|入门|入門',
+  'Compare the prerequisites with your own background. A course described as easy by another student may not suit your preparation.',
+  'Try introductory problems before the course starts and address unfamiliar concepts early to avoid falling behind.'),
+ ('coding','Programming and debugging',r'programming|\bcode\b|\bcoding\b|debug|python|\bc\+\+|编程|程式|写代码|寫代碼',
+  'If you have limited programming experience, allow time for writing and debugging code when planning your workload.',
+  'Run and modify examples yourself, write small tests for your programs, and keep notes on debugging.'),
+ ('participation','Class participation',r'attendance|participation|pop quiz|出勤|签到|簽到|考勤|课堂参与|課堂參與',
+  'Check the current participation and attendance requirements. Experiences from previous semesters may not reflect this semester\'s rules.',
+  'Confirm participation marks and attendance rules at the start, and add class activities and submission deadlines to your calendar.'),
+ ('reading','Reading, writing and presentations',r'reading|readings|essays?|presentations?|阅读|閱讀|论文|論文|汇报|匯報',
+  'If you are taking other courses with substantial reading or presentations, compare their deadlines before finalising your course combination.',
+  'Note the arguments and evidence as you read. Outline essays and presentations first, then check clarity and citations.'),
 ]
 
 def clean(text):
  text = re.sub(r'(?m)^By .+ on [A-Z][a-z]{2} \d{1,2}, \d{4}.*$', '', text)
- text = re.sub(r'(?i)(?<![\w.+-])[\w.+-]+@[\w.-]+\.[a-z]{2,}', '[邮箱已隐藏]', text)
+ text = re.sub(r'(?i)(?<![\w.+-])[\w.+-]+@[\w.-]+\.[a-z]{2,}', '[Email hidden]', text)
  text = re.sub(r'(?im)^.*(?:access[_ -]?token|refresh[_ -]?token|authorization|cookie|password)\s*[:=].*$', '', text)
  text = re.sub(r'(?im)^\s*Read More\s*$', '', text)
  text = re.split(r'(?im)^\s*\d+ ATTACHMENTS?\s*$', text)[0]
@@ -120,7 +120,8 @@ def main():
  result,stats=prepare(payload,catalog);root=Path(args.output_dir);root.mkdir(parents=True,exist_ok=True)
  for code,value in result.items():
   (root/(code+'.json')).write_text(json.dumps(value,ensure_ascii=False,separators=(',',':'))+'\n')
- index={'updatedAt':payload['capturedAt'],'processedCourses':len(payload['courses']),'stats':stats,
+ content_version=hashlib.sha256(json.dumps(result,ensure_ascii=False,sort_keys=True,separators=(',',':')).encode()).hexdigest()[:16]
+ index={'contentVersion':content_version,'updatedAt':payload['capturedAt'],'processedCourses':len(payload['courses']),'stats':stats,
         'courses':{code:{k:value[k] for k in ('reviewCount','ratings','ratingCount')} for code,value in result.items()}}
  path=Path(args.index);path.parent.mkdir(parents=True,exist_ok=True);path.write_text(json.dumps(index,ensure_ascii=False,indent=2)+'\n')
  print(json.dumps(stats,ensure_ascii=False));print('Anonymous review data written to',root)

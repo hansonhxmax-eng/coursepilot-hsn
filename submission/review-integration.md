@@ -37,6 +37,11 @@ Unavailable courses use the requested “No Review Published yet~” text. Cours
 with ratings but no complete comment text retain their ratings and have a
 different empty-comment message. Loading errors have a separate retry state.
 
+All interface text, accessibility labels, generated topic labels and advice use
+English. Student comments and supporting quotations retain their original
+language at the owner's request. Course requests include a content hash from
+the generated catalog so revised summaries replace previously cached data.
+
 Normal course labels omit OCR/PDF/snapshot terminology. The footer displays the
 collection update timestamp in Asia/Shanghai: 2026-11-03 22:30 UTC+8. This is not
 a new assertion about when the original schedule/seat data was captured.

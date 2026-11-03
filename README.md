@@ -31,6 +31,7 @@ npm run preview -- --port 4173
 - User-selected Monday-week calendar exports preserve actual meeting durations; no official academic calendar or holiday assumptions are invented.
 - Course details include four letter-grade rating dimensions and 14,740 anonymous reviews, with term/teacher filters, text search, pagination and helpful ordering. Reviews are bundled by course and loaded only when opened; they persist after reload.
 - Review summaries count discussion themes across the prepared comments, link to supporting quotations and give conditional selection/study advice. They do not establish current assessment rules.
+- The interface, generated summaries and advice use English. Student reviews and supporting quotations retain their original language. A content version refreshes cached course data after each dataset update.
 
 See [real-data validation and limitations](submission/real-data-validation.md), [current five reviewer scenarios](submission/reviewer-scenarios.md), and [the local collector guide](tools/ustspace/README.md). The owner supplied a completed 544-course collection; 172 courses contain captured data and 372 are unavailable. No login information is collected by the platform.
 

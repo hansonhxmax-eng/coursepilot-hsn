@@ -778,11 +778,11 @@ export default function ScheduleWorkspace() {
         )}
       </section>
       <section id="real-reviews" className="real-section card real-review-panel">
-        <div className="real-heading"><div><span className="eyebrow">STUDENT PERSPECTIVES</span><h2>读评价，再选课。</h2><p>每门课程详情内都有四维评分、匿名评价与选课学习参考。已整理 {reviewCatalog.stats.reviews.toLocaleString()} 条评价，按学期与授课教师找到适合你的参考。</p></div><MessageSquare size={26} /></div>
-        <div className="review-featured-courses">{["COMP1023", "ACCT2010", "MATH1013", "ISOM1380"].map(id => <button key={id} onClick={() => setDetail(snapshot.courses.find(c => c.id === id))}><strong>{id}</strong><span>{reviewCatalog.courses[id]?.reviewCount.toLocaleString() || 0} 条评价 →</span></button>)}</div>
+        <div className="real-heading"><div><span className="eyebrow">STUDENT PERSPECTIVES</span><h2>Read reviews. Choose with confidence.</h2><p>Explore four rating dimensions, anonymous reviews and practical advice in each course. Browse {reviewCatalog.stats.reviews.toLocaleString("en-US")} reviews by term and instructor to find perspectives that matter to you.</p></div><MessageSquare size={26} /></div>
+        <div className="review-featured-courses">{["COMP1023", "ACCT2010", "MATH1013", "ISOM1380"].map(id => <button key={id} onClick={() => setDetail(snapshot.courses.find(c => c.id === id))}><strong>{id}</strong><span>{reviewCatalog.courses[id]?.reviewCount.toLocaleString() || 0} reviews →</span></button>)}</div>
         <details className="review-basis"><summary>Course list</summary><button className="real-outline" onClick={downloadCodes}><Download size={14} />Download course codes</button></details>
       </section>
-      <footer className="course-data-footer">数据更新时间：<time dateTime={reviewCatalog.updatedAt}>{updatedLabel(reviewCatalog.updatedAt)}（UTC+8）</time><br />课表学期：{snapshot.term} · 席位非实时，最新选课要求请以 SIS 为准。</footer>
+      <footer className="course-data-footer">Data updated: <time dateTime={reviewCatalog.updatedAt}>{updatedLabel(reviewCatalog.updatedAt)} (UTC+8)</time><br />Schedule term: {snapshot.term} · Seat availability is not live. Check SIS for current enrollment requirements.</footer>
       {detail && (
         <div className="modal-backdrop" onClick={() => setDetail(null)}>
           <section
