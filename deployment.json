@@ -1,6 +1,17 @@
 {
   "project": "CoursePilot",
-  "source_commit": "2d4347f2c8a2239a8949c664a0c8982c2e4dd81a",
-  "built_at": "2026-11-03T02:25:56.975768+00:00",
-  "data_mode": "synthetic demo"
+  "source_commit": "d564c652bccb516bef9881864b363260afd84e1a",
+  "built_at": "2026-11-03T03:57:11.834837+00:00",
+  "data_mode": "uploaded-pdf-snapshots + isolated synthetic preference demo",
+  "snapshot_term": "2026-27 Fall",
+  "snapshot_counts": {
+    "sources": 11,
+    "pages": 117,
+    "courses": 462,
+    "sections": 1168,
+    "readableSections": 980,
+    "consistentSeatSections": 747,
+    "commonCoreTaggedCourses": 25
+  },
+  "authenticated_ustspace_collection": "pending owner login and first-course compatibility check"
 }
