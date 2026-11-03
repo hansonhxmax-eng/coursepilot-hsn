@@ -1,0 +1,16 @@
+test_access_rejections_stop_without_retry (test_collector.CollectorTests.test_access_rejections_stop_without_retry) ... ok
+test_course_codes_deduplicate_and_flag_unclear_ocr (test_collector.CollectorTests.test_course_codes_deduplicate_and_flag_unclear_ocr) ... ok
+test_course_match_has_boundaries (test_collector.CollectorTests.test_course_match_has_boundaries) ... ok
+test_does_not_guess_numeric_routes_or_reuse_token_queries (test_collector.CollectorTests.test_does_not_guess_numeric_routes_or_reuse_token_queries) ... ok
+test_downloadable_zip_contains_current_code_and_no_login_profile (test_collector.CollectorTests.test_downloadable_zip_contains_current_code_and_no_login_profile) ... ok
+test_growing_snapshots_do_not_repeat_whole_old_page (test_collector.CollectorTests.test_growing_snapshots_do_not_repeat_whole_old_page) ... ok
+test_large_exports_partition_without_losing_courses (test_collector.CollectorTests.test_large_exports_partition_without_losing_courses) ... ok
+test_observed_templates_preserve_route_shape (test_collector.CollectorTests.test_observed_templates_preserve_route_shape) ... ok
+test_partial_results_are_saved_with_explicit_incomplete_status (test_collector.CollectorTests.test_partial_results_are_saved_with_explicit_incomplete_status) ... ok
+test_source_urls_drop_queries_and_reject_outside_hosts (test_collector.CollectorTests.test_source_urls_drop_queries_and_reject_outside_hosts) ... ok
+test_visible_text_redacts_email_and_inline_credentials (test_collector.CollectorTests.test_visible_text_redacts_email_and_inline_credentials) ... ok
+
+----------------------------------------------------------------------
+Ran 11 tests in 0.005s
+
+OK

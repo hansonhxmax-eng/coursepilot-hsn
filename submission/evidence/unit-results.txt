@@ -2,30 +2,47 @@
 > coursepilot@1.0.0 test
 > node --test --test-isolation=none tests/*.test.js
 
-✔ profile 1: every returned plan satisfies all hard constraints (20.874706ms)
-✔ profile 2: every returned plan satisfies all hard constraints (3.016937ms)
-✔ profile 3: every returned plan satisfies all hard constraints (2.82595ms)
-✔ profile 4: every returned plan satisfies all hard constraints (0.779643ms)
-✔ profile 5: every returned plan satisfies all hard constraints (1.106918ms)
-✔ profile 6: every returned plan satisfies all hard constraints (0.339698ms)
-✔ profile 7: every returned plan satisfies all hard constraints (16.445869ms)
-✔ profile 8: every returned plan satisfies all hard constraints (1.091469ms)
-✔ profile 9: every returned plan satisfies all hard constraints (9.977353ms)
-✔ profile 10: every returned plan satisfies all hard constraints (0.509064ms)
-✔ impossible constraints produce no plans without relaxation (0.305492ms)
-✔ individual matches cannot bypass timetable conflicts (0.170179ms)
-✔ unknown attendance and stale data are excluded (0.23222ms)
-✔ back-to-back sessions are allowed, overlapping sessions rejected (0.350844ms)
-✔ 30 unique synthetic records have explicit provenance and valid session bounds (0.333291ms)
-✔ all five reviewer scenarios produce three valid options (4.329044ms)
-✔ limited English and Chinese parser applies only recognized filters (0.984248ms)
-✔ seat updates change safe eligibility and do not mutate original fixtures (0.203754ms)
-✔ four-course planning remains comfortably inside 90-second goal (47.525914ms)
-ℹ tests 19
+✔ profile 1: every returned plan satisfies all hard constraints (17.904004ms)
+✔ profile 2: every returned plan satisfies all hard constraints (3.433354ms)
+✔ profile 3: every returned plan satisfies all hard constraints (2.638404ms)
+✔ profile 4: every returned plan satisfies all hard constraints (0.375437ms)
+✔ profile 5: every returned plan satisfies all hard constraints (1.315096ms)
+✔ profile 6: every returned plan satisfies all hard constraints (0.208254ms)
+✔ profile 7: every returned plan satisfies all hard constraints (10.269397ms)
+✔ profile 8: every returned plan satisfies all hard constraints (0.835712ms)
+✔ profile 9: every returned plan satisfies all hard constraints (8.226312ms)
+✔ profile 10: every returned plan satisfies all hard constraints (0.475558ms)
+✔ impossible constraints produce no plans without relaxation (0.30489ms)
+✔ individual matches cannot bypass timetable conflicts (0.135995ms)
+✔ unknown attendance and stale data are excluded (0.198089ms)
+✔ back-to-back sessions are allowed, overlapping sessions rejected (0.168104ms)
+✔ 30 unique synthetic records have explicit provenance and valid session bounds (0.2516ms)
+✔ all five reviewer scenarios produce three valid options (5.548298ms)
+✔ limited English and Chinese parser applies only recognized filters (1.14529ms)
+✔ seat updates change safe eligibility and do not mutate original fixtures (0.108684ms)
+✔ four-course planning remains comfortably inside 90-second goal (46.415677ms)
+✔ all 11 PDF sources and 117 pages are accounted for, with unique courses and sections (0.681389ms)
+✔ real snapshot never invents reviews, assessments or Common Core domains (0.462579ms)
+✔ every parsed interval is valid, every source page lies within its PDF (1.558312ms)
+✔ visually checked anchors retain 80-minute ACCT and 110-minute AISC classes (0.268856ms)
+✔ COMP split date ranges are parsed rather than merged into fictitious semester-wide times (0.166561ms)
+✔ date-aware conflict check allows disjoint teaching periods and back-to-back meetings (0.53697ms)
+✔ real example returns complete, distinct, conflict-free section plans (1.349107ms)
+✔ lecture plus tutorial/lab components are retained instead of recommending lectures alone (0.51648ms)
+✔ TBA required components and unverified linked sections block automatic plans (0.239702ms)
+✔ unknown assessment preference is a hard blocker, never inferred from absent reviews (0.152521ms)
+✔ locking a section is respected; invalid locks are not silently ignored (0.148644ms)
+✔ zero availability, empty weekdays and bounded search never silently relax constraints (0.453845ms)
+✔ ICS preserves actual section duration and exports only a user-selected Monday week (1.138249ms)
+✔ review import matches course code, strips query data and leaves academic assertions unknown (0.227253ms)
+✔ malformed review imports, non-USTSpace URLs and oversized text are rejected atomically (0.392682ms)
+✔ unclassified components cannot be silently dropped from an otherwise readable course (0.122785ms)
+✔ every public source PDF matches the checksum recorded in provenance (26.078869ms)
+ℹ tests 36
 ℹ suites 0
-ℹ pass 19
+ℹ pass 36
 ℹ fail 0
 ℹ cancelled 0
 ℹ skipped 0
 ℹ todo 0
-ℹ duration_ms 137.63277
+ℹ duration_ms 161.900907

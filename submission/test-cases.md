@@ -1,3 +1,7 @@
+# Current validation
+
+See [real-data-validation.md](real-data-validation.md) for the current real-schedule and local-collector checks. The table below preserves the original v1 synthetic preference-demo cases; its first-load expectations apply after selecting **Preference demo**, not the new default Real schedules workspace.
+
 # Executed test cases
 
 Run date: 2026-11-03 (Asia/Shanghai). Target: Vite production build served on port 4173. Browser: Chromium, headless; desktop 1440×1000 and mobile 390×844. Final outcome: **19/19 solver tests, 20/20 browser checkpoints, production build passed**. No skipped solver tests. Saved output is in `evidence/`.

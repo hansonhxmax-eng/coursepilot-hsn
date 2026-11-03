@@ -1,0 +1,11 @@
+# CoursePilot — pre-release test log
+
+Date: 3 November 2026. Scope: the local production build, using 30 explicitly synthetic course records. Public deployment and authenticated university services were outside this test run.
+
+Before release, we ran 19 automated solver tests and 20 Chromium browser checks. Ten student profiles varied course count, allowed domains, attendance, quizzes, group projects, early classes, available weekdays, campus days and open-seat requirements. For every returned Plan A/B/C, tests checked course count, hard constraints, distinct alternatives and timetable collisions. All profiles returned three valid plans. We also tested impossible availability, overlapping classes, back-to-back sessions, unknown attendance, stale records and seat updates. Impossible requests returned no plan instead of silently relaxing constraints; unknown required fields and stale records were excluded.
+
+Browser testing covered all five reviewer scenarios, switching plans, English and Chinese phrase parsing, unsupported requests, catalog search, domain filtering, empty-state recovery, course details, bookmarks surviving reload, simulated waitlist notifications and the action log. Calendar downloads contained six recurring sessions with demo labels and Hong Kong time. We checked desktop and mobile navigation, page overflow, modal Escape handling and keyboard focus containment. Both official-source links were checked for their exact destinations, new-tab behavior and SIS navigation guidance; actual login was not tested.
+
+An initial boundary check found that evening sessions ending at 19:30 exceeded the timetable’s 19:00 display range. We extended the display to 20:00, aligned gridlines with hour labels and reran validation. Browser-test harness issues were corrected separately rather than counted as product fixes. The final build passed, with no uncaught JavaScript errors during the browser journey. The largest tested solver case completed in approximately 48 milliseconds locally.
+
+We deliberately retained synthetic data, a limited phrase parser and button-triggered monitoring. We did not implement unauthorized scraping, automatic enrollment or external notifications because those require approved integrations and account access. These limitations remain visible throughout the interface.

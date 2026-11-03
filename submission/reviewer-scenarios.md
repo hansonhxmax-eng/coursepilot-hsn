@@ -1,37 +1,41 @@
-# Five scenarios for reviewers
+# Five reviewer scenarios — current version
 
-Use **All 5 scenarios** on the planner to load and generate any preset in one click. Alternatively paste a query into the request bar, click the arrow, review the visible filters and click **Generate my plans**. The parser recognizes selected English/Chinese phrases; it is not a general-purpose chatbot. Every record and seat count is synthetic.
+Demo: https://hansonhxmax-eng.github.io/first-project/
 
-## 1. Keep my mornings free
+The default **Real schedules** workspace uses OCR transcriptions of 11 user-uploaded PDFs for **2026–27 Fall**. These are real schedule snapshots, not live SIS availability. Course codes, titles and times may contain OCR errors; source PDFs are linked for checking. The separate **Preference demo** page retains synthetic data for the preference-flow demonstration.
 
-> Find 3 courses with no classes before 10am, no attendance and no quizzes, within a four-day week.
+## 1. Build a real three-course timetable
 
-Expected: three alternatives, each with three courses, no mandatory attendance, no quizzes, no session before 10:00 and at most four campus days. Select Plan B or C and observe both the course list and timetable change.
+Click **Try a real schedule**. This selects ACCT 2010, ISOM 1380 and AISC 1000B, with no classes before 10:00 and at most four campus days.
 
-## 2. Make Friday mine
+Expected: Plan A/B/C use real section times, and the page scrolls to the timetable builder. Switch plans to inspect different section choices. The output is provisional time compatibility; it does not establish enrollment eligibility or live seats.
 
-> Give me 3 courses with no Friday classes, no group projects and no quizzes.
+## 2. Include tutorials, not just lectures
 
-Expected: three valid plans with Friday free, no group projects and no quizzes. The preset additionally retains the visible no-attendance and no-early-class defaults. All hard filters are shown in the sidebar.
+Click **Clear selection**. Search and add AMCC 2010, then SOSC 1350; leave the early-class restriction off. Click **Generate section plans**.
 
-## 3. A little art, a little perspective
+Expected: every returned plan includes one lecture and one tutorial per course. Open a course's original PDF to compare the transcribed components. Changing a tutorial lock should affect the plan or produce a clear conflict.
 
-> Find 2 Arts or Humanities courses with no attendance and no early classes.
+## 3. Force a conflict, then recover
 
-Expected: every plan contains two courses in A/H only, with no attendance requirement or early session. Open a course to inspect its sample assessments and provenance. Export its timetable as an .ics calendar; the dates are illustrative sample weeks starting in February 2027.
+Reload **Try a real schedule**. Lock ACCT 2010 to **L02**, retaining the no-early-class constraint, and generate.
 
-## 4. Skip the waitlist — then test a change
+Expected: no plan. L02 overlaps ISOM 1380 L1, while the alternative ISOM lecture has a 09:00 Friday meeting that is excluded. Change ACCT to **L01** and regenerate to recover a valid plan. The planner must not silently change the lock or relax your time preference.
 
-> Find 3 courses with open seats, no quizzes and no morning classes.
+## 4. Test an unsupported academic preference
 
-Expected: the planner enables **Open seats only** and excludes zero-seat courses. Then visit **My watchlist** and click **Simulate seat update**. With the default watchlist, HUMA1002 changes from 0 to 2 open seats and its waitlist falls from 28 to 23. A notification and action-log entry appear, explicitly marked as simulated. If the watchlist has changed, the simulation updates its first course instead. Nothing is polled in the background.
+Load the real example, enable **No mandatory attendance**, and generate.
 
-## 5. A greener semester
+Expected: no plan, with an explanation that attendance is not established by the schedule PDFs. The same applies to no-quizzes and no-group-projects preferences. USTSpace page-text imports are evidence only; they do not automatically become syllabus assertions or grade predictions.
 
-> Find 2 Sustainability courses, no group projects, no attendance and no early classes.
+## 5. Inspect uncertainty and export evidence
 
-Expected: three two-course plans containing SUS courses only. To test failure recovery, deselect every available weekday and generate again: no plan should be returned. Click **Try the balanced sample** to recover.
+Clear selection, search **AISC 1000A**, add it and generate.
 
-## Official sources and login
+Expected: no complete timetable because the PDF lists TBA sessions. Open the source to verify. Then load the real example and export the Monday week starting **2026-11-02**. The .ics contains single-week events with actual parsed durations, not an invented semester calendar. Choosing a Tuesday as week start is rejected.
 
-On **Official sources**, open USTSpace at <https://ust.space/review> and log in or register on that website. For SIS, open <https://itso.hkust.edu.hk/student-hotlinks/> and follow **Student Center → My Favorites → Academics**, completing university authentication on the official site. Entry links are also available in course details. No password is requested by CoursePilot. Opening these links does not import data or prove a logged-in connection.
+## Optional review-data exercise
+
+Under **USTSpace snapshots**, download the local collector and guide. The owner logs into USTSpace personally on their computer; begin with three courses and inspect the output before attempting the full list. Actual authenticated-site compatibility has not been verified. A successful JSON export can be imported into the platform; captured page text is shown literally, stays in tab memory, and clears on reload. No passwords, login tokens or browser profile files should be imported.
+
+The source PDF capture time is unknown. Seat counts are historical, not live. CC26 labels mean a literal tag was detected in OCR, not a guarantee of Common Core eligibility. Always verify current details and section links in SIS.

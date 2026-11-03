@@ -13,11 +13,13 @@ def passed(name):
 with sync_playwright() as p:
  options={'headless':True,'args':['--no-sandbox']}
  if os.environ.get('CHROMIUM_PATH'):options['executable_path']=os.environ['CHROMIUM_PATH']
+ if os.environ.get('BASE_URL','').startswith('https://') and os.environ.get('HTTPS_PROXY'):options['proxy']={'server':os.environ['HTTPS_PROXY']}
  browser=p.chromium.launch(**options)
  context=browser.new_context(viewport={'width':1440,'height':1000},reduced_motion='reduce',accept_downloads=True)
  page=context.new_page();errors=[]
  page.on('pageerror',lambda e:errors.append(str(e)))
  page.goto(os.environ.get('BASE_URL','http://127.0.0.1:5173/'),wait_until='networkidle')
+ page.get_by_role('button',name='Preference demo',exact=True).click()
  expect(page.locator('.plan-tab')).to_have_count(3)
  expect(page.locator('.course-row')).to_have_count(3)
  assert 'simulated' in page.locator('.demo-banner').inner_text()
@@ -63,7 +65,7 @@ with sync_playwright() as p:
  page.get_by_role('button',name='Try the balanced sample').click()
  expect(page.locator('.plan-tab')).to_have_count(3)
  passed('Impossible availability returns no plan; recovery restores valid plans')
- page.get_by_role('button',name='Course explorer',exact=True).click()
+ page.get_by_role('button',name='Demo catalog',exact=True).click()
  expect(page.locator('.catalog-card')).to_have_count(30)
  field=page.get_by_role('textbox',name='Search courses');field.fill('impossible string')
  expect(page.locator('.empty-state')).to_contain_text('No courses found')
@@ -74,13 +76,13 @@ with sync_playwright() as p:
  field.fill('HUMA1001');expect(page.locator('.catalog-card')).to_have_count(1)
  page.get_by_role('button',name='Watch HUMA1001',exact=True).click()
  passed('Catalog: search, empty state, domain filter and bookmarking work')
- page.reload();page.get_by_role('button',name='My watchlist',exact=False).click()
+ page.reload();page.get_by_role('button',name='Demo watchlist',exact=False).click()
  assert 'HUMA1001' in page.locator('.watch-layout').inner_text()
  page.get_by_role('button',name='Simulate seat update').click()
  expect(page.locator('.update-item')).to_have_count(1)
  expect(page.locator('.update-item')).to_contain_text('waitlist 28 → 23')
  passed('Watchlist persists on reload; simulation updates seats and emits an in-app notification')
- page.get_by_role('button',name='Activity log',exact=True).click()
+ page.get_by_role('button',name='Demo activity',exact=True).click()
  expect(page.locator('.activity')).to_contain_text('SIMULATED update')
  expect(page.locator('.audit')).to_contain_text('Stale source record')
  passed('Activity trail records simulated updates and shows exclusion reasons')
@@ -95,7 +97,7 @@ with sync_playwright() as p:
  expect(page.locator('.source-return')).to_contain_text('does not scrape reviews or read your SIS account')
  assert page.locator('input[type=password]').count()==0
  passed('Official source links use user-provided URLs, safe new tabs, SIS path and honest manual-access status')
- page.get_by_role('button',name='Course planner',exact=True).click()
+ page.get_by_role('button',name='Preference demo',exact=True).click()
  page.locator('.course-row-main').first.click()
  expect(page.get_by_role('dialog')).to_contain_text('Synthetic demo fixture')
  expect(page.get_by_role('link',name='Check USTSpace')).to_have_attribute('href','https://ust.space/review')
@@ -113,11 +115,11 @@ with sync_playwright() as p:
  assert not mobile.evaluate('document.documentElement.scrollWidth>innerWidth')
  assert mobile.locator('.sidebar').bounding_box()['x'] < -200
  mobile.get_by_role('button',name='Open menu').click()
- mobile.get_by_role('button',name='Course explorer',exact=True).click()
+ mobile.get_by_role('button',name='Demo catalog',exact=True).click()
  expect(mobile.locator('.catalog-card')).to_have_count(30)
  assert mobile.locator('.sidebar').bounding_box()['x'] < -200
  mobile.get_by_role('button',name='Open menu').click()
- mobile.get_by_role('button',name='Course planner',exact=True).click()
+ mobile.get_by_role('button',name='Preference demo',exact=True).click()
  mobile.screenshot(path=str(out/'mobile.png'),full_page=True)
  passed('Mobile 390px: collapsed navigation, working menu, and no page overflow')
  assert not errors,errors

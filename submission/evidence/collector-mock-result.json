@@ -1,0 +1,7 @@
+{
+  "status": "passed",
+  "test": "tests/collector_browser.py",
+  "scope": "Locally fulfilled TEST FIXTURE course pages, no actual USTSpace account or network requests",
+  "verified": ["load more", "next page", "course code matching", "email redaction", "visible-content-only status", "stop on access/rate-limit status"],
+  "authenticated_ustspace_compatibility": "not yet tested"
+}

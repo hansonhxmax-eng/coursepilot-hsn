@@ -1,0 +1,25 @@
+{
+  "passed": 18,
+  "checks": [
+    "Real uploaded PDF workspace is the default; term, OCR and stale-availability boundaries are visible",
+    "Real catalog paginates and matches spaced or compact course codes",
+    "Source-linked course details display actual class duration and unknown review fields",
+    "Original PDF asset is served correctly",
+    "Department, CC26-detected and empty search filters work without inventing domain eligibility",
+    "Three real-course section plans are generated; switching plans changes selected sections",
+    "Real calendar export preserves 110-minute session and uses a single user-selected week",
+    "Non-Monday input is rejected; last valid week stays selected",
+    "Missing attendance evidence yields no plan instead of a false no-attendance recommendation",
+    "Impossible weekday availability does not relax constraints",
+    "TBA-only AISC course is excluded from complete schedules",
+    "Conflicting locked section returns no plan; compatible section lock is respected",
+    "Downloadable course list contains well-formed real codes, checked suffix corrections and an explicit exclusion field",
+    "Collector and its login/setup guide are downloadable as a valid ZIP",
+    "Imported review text stays literal, matches a real code, and does not execute markup or infer academic tags",
+    "Invalid import fails without deleting earlier session evidence",
+    "Real/demo modes are distinct; course selection persists while imported review text clears on reload",
+    "Desktop and mobile real workflows fit the viewport; no uncaught JavaScript errors"
+  ],
+  "errors": [],
+  "target": "http://127.0.0.1:4173/"
+}

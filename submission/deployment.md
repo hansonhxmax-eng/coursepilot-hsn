@@ -24,4 +24,4 @@ Run `npm ci`, `npm test`, and `npm run build` in the source checkout. Publish th
 
 ## Verification status
 
-Local production build: passed. Solver tests: 19 passed. Chromium journey: 20 checkpoints passed. These are local results, not evidence of successful public deployment. The cloud environment currently blocks GitHub API access and does not yet allow the public Pages hostname. Requests for those two domains have been saved to the cloud environment draft. Opening Pages settings yourself does not depend on the agent's network access.
+GitHub Pages is enabled on gh-pages at /, and API/public-site access is available in the cloud environment. The prior public version passed 20 anonymous browser checks. The current real-PDF update is validated separately; see real-data-validation.md and the saved evidence for its final check scope. The site is publicly accessible, but continued availability over the entire review window still depends on retaining the deployment.

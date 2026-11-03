@@ -41,6 +41,7 @@ import {
 } from "./data";
 import { plan, reasons, score, timeLabel, parseQuery } from "./engine";
 import "./style.css";
+import ScheduleWorkspace from "./schedules/ScheduleWorkspace";
 const COLORS = ["sage", "lavender", "peach", "blue"];
 function readSaved() {
   try {
@@ -54,7 +55,7 @@ function App() {
   const [prefs, setPrefs] = useState({ ...DEFAULT, ...saved.prefs });
   const [applied, setApplied] = useState({ ...DEFAULT, ...saved.prefs });
   const [data, setData] = useState(initialCourses);
-  const [view, setView] = useState("planner");
+  const [view, setView] = useState("schedules");
   const [selected, setSelected] = useState(0);
   const [query, setQuery] = useState("");
   const [queryNote, setQueryNote] = useState("");
@@ -276,7 +277,7 @@ function App() {
           href="#"
           onClick={(e) => {
             e.preventDefault();
-            navigate("planner");
+            navigate("schedules");
           }}
         >
           <span className="brand-icon">
@@ -287,11 +288,12 @@ function App() {
         <div className="workspace-label">YOUR WORKSPACE</div>
         <nav>
           {[
-            ["planner", LayoutDashboard, "Course planner"],
-            ["catalog", Library, "Course explorer"],
-            ["watchlist", Bell, "My watchlist"],
+            ["schedules", CalendarDays, "Real schedules"],
+            ["planner", LayoutDashboard, "Preference demo"],
+            ["catalog", Library, "Demo catalog"],
+            ["watchlist", Bell, "Demo watchlist"],
             ["sources", ExternalLink, "Official sources"],
-            ["activity", Activity, "Activity log"],
+            ["activity", Activity, "Demo activity"],
           ].map(([id, Icon, label]) => (
             <button
               key={id}
@@ -357,10 +359,11 @@ function App() {
             <strong>
               {
                 {
-                  planner: "Course planner",
-                  catalog: "Course explorer",
-                  watchlist: "My watchlist",
-                  activity: "Activity log",
+                  schedules: "Real schedules",
+                  planner: "Preference demo",
+                  catalog: "Demo catalog",
+                  watchlist: "Demo watchlist",
+                  activity: "Demo activity",
                   sources: "Official sources",
                 }[view]
               }
@@ -368,8 +371,11 @@ function App() {
           </div>
           <div className="header-right">
             <span className="term">
-              <CalendarDays size={14} /> Spring 2027{" "}
-              <span className="demo-mini">DEMO</span>
+              <CalendarDays size={14} />{" "}
+              {view === "schedules" ? "2026–27 Fall" : "Spring 2027"}{" "}
+              <span className="demo-mini">
+                {view === "schedules" ? "PDF SNAPSHOT" : "DEMO"}
+              </span>
             </span>
             <button
               className="notification-btn icon-btn"
@@ -385,11 +391,13 @@ function App() {
         <div className="main-inner">
           <div className="demo-banner">
             <span>
-              <span className="live-dot" /> INTERACTIVE PROTOTYPE
+              <span className="live-dot" />{" "}
+              {view === "schedules" ? "UPLOADED SCHEDULES" : "SAMPLE MODE"}
             </span>
             <p>
-              Explore with 30 sample courses. All reviews, schedules and
-              availability are simulated.
+              {view === "schedules"
+                ? "Your uploaded 2026–27 Fall schedules. OCR transcription; verify original PDFs. No live SIS or USTSpace connection."
+                : "Preference demo: 30 synthetic courses. Reviews and availability in this mode are simulated."}
             </p>
             <button onClick={() => navigate("sources")}>
               Official sources <ArrowUpRight size={13} />
@@ -405,6 +413,11 @@ function App() {
               <h1>
                 {
                   {
+                    schedules: (
+                      <>
+                        Your real courses. <em>A clearer plan.</em>
+                      </>
+                    ),
                     planner: (
                       <>
                         Make room for <em>what matters.</em>
@@ -436,6 +449,8 @@ function App() {
               <p>
                 {
                   {
+                    schedules:
+                      "Browse your actual PDF schedules, choose sections, and build a provisional timetable.",
                     planner:
                       "Good courses. A better schedule. A little more breathing room.",
                     catalog: "Explore the details behind every recommendation.",
@@ -458,6 +473,9 @@ function App() {
               </span>
             </div>
           </section>
+          <div hidden={view !== "schedules"}>
+            <ScheduleWorkspace />
+          </div>
           {view === "planner" && (
             <>
               <form className="ask-bar" onSubmit={applyQuery}>
@@ -1119,9 +1137,10 @@ function App() {
                   <h3>What happens after I log in?</h3>
                   <p>
                     Your login session stays on the official website. Return to
-                    this tab to continue planning. This version uses synthetic
-                    course records; it does not scrape reviews or read your SIS
-                    account. Compare the demo's workflow with official
+                    this tab to continue planning. Real schedules uses uploaded
+                    PDF snapshots; the preference demo uses synthetic course
+                    records. This version does not scrape reviews or read your
+                    SIS account. Compare the planner output with official
                     information, and complete any real enrollment yourself in
                     SIS.
                   </p>
@@ -1553,9 +1572,11 @@ function App() {
             <p>
               The constraint solver, course search, timetable generation,
               calendar export, watchlist, browser storage, and action logs work.
-              All 30 course records, names, ratings and availability are
-              synthetic. No live scraper, language model, institutional login,
-              actual enrollment, or background alerts are connected.
+              The Real schedules workspace uses uploaded 2026–27 Fall PDF
+              snapshots, with unknown assessment and review fields. The separate
+              preference demo uses 30 synthetic records, names, ratings and
+              availability. No live scraper, language model, institutional
+              login, actual enrollment, or background alerts are connected.
             </p>
             <h3>How scores work</h3>
             <p>
