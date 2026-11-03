@@ -1,6 +1,6 @@
 # USTSpace 本地可见页面采集工具
 
-完整 ZIP 包含程序、544 门课程清单（82 个 MATH、76 个 COMP）、依赖说明和 Windows 启动器。课程来自提供的 2026–27 Fall 课表，不是 USTSpace 的完整目录。
+版本 `2026.11.03.4-auto`。完整 ZIP 包含程序、544 门课程清单（82 个 MATH、76 个 COMP）、依赖说明和 Windows 启动器。课程来自提供的 2026–27 Fall 课表，不是 USTSpace 的完整目录。
 
 ## Windows 一键运行和续采
 
@@ -8,7 +8,9 @@
 
 更新旧工具时，用 ZIP 中的程序文件替换同名文件，保留原来的 `ustspace-all-snapshots.json` 和本地登录目录。启动器默认使用 `--resume`，会先复制带时间戳的 backup，再保存新结果。已采集及 unavailable 的课程会跳过，failed 的课程会重试。14 条已有记录对应 530 门待处理；原有成功页面不会丢失。损坏、未知代码或重复代码的续采文件会报错，原文件保持不变。
 
-登录后按终端提示打开第一门课程的实际评价详情页，再回终端按 Enter。即使第一门已采集过，也可用它确认登录和课程链接；不会重复采集已保留的结果。
+登录后，在弹出的浏览器里点击清单内任意一门课程，打开实际评价详情页即可，支持新标签页。工具自动检测课程并试采；终端显示 `TEST PASS` 后，立即处理完整清单的所有待采课程。无需回终端按 Enter、指定第一门课程或再启动一次。目录和搜索结果页不会触发采集。
+
+试采成功的课程会直接保存，不会在批量采集中重复。也可以打开以前已采集的课程作为测试，原有成功记录会保留。窗口请保持打开；完成后结果位于工具目录的 `ustspace-all-snapshots.json`，终端会显示保存数量。
 
 ## macOS / Linux 或手动启动
 
@@ -28,6 +30,6 @@ python3 collect.py --courses coursepilot-course-codes.json --output ustspace-all
 
 CoursePilot → Real schedules → USTSpace snapshots → Import USTSpace JSON。大文件会另外生成约 8 MB 的 part 分片，完整主文件保留。网页有 20 MB 文件及单课程文字长度限制；保留原始 JSON。导入文字仅在当前标签页内存中，刷新后清除。
 
-已验证模拟页面的分页、连续 unavailable、续采保留、访问限制停止、数据脱敏和完整 ZIP。Windows 启动器尚未在 Windows 实机执行；真实登录 USTSpace 的兼容性和评价完整性需在你本机确认。
+已验证模拟页面中的登录→点击任意课程（含新标签页）→自动试采→全清单采集，全程不读取终端输入；同时验证分页、连续 unavailable、续采保留、访问限制停止、数据脱敏和完整 ZIP。自动试采验证的是课程可见页面读取，不代表评价完整性认证。Windows 启动器尚未在 Windows 实机执行；真实登录 USTSpace 的兼容性和评价完整性需在你本机确认。
 
 不要上传 `.ustspace-local-session`、Cookie、密码、验证码、请求头或完整 HAR。导出 JSON 是可见页面文字，可能含课程说明或个人信息；分享前自行检查。工具移除邮箱样式文字及明显凭证行，不保证完整匿名化。

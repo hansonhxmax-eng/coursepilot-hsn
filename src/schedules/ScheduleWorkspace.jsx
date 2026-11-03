@@ -836,9 +836,9 @@ export default function ScheduleWorkspace() {
             <div>
               <strong>Log in on your own computer</strong>
               <p>
-                Use the local collector with its setup guide. Website
-                compatibility needs a first-course check; no account session is
-                sent here.
+                Open the local collector, log in and click any listed course.
+                A successful page test automatically starts the full list.
+                Your account session stays on your computer.
               </p>
               <a
                 className="real-outline"

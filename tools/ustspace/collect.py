@@ -5,10 +5,11 @@ Actual USTSpace compatibility requires a first-course check on the user's machin
 import argparse,json,re,time,sys,shutil,itertools
 from datetime import datetime,timezone
 from pathlib import Path
-from urllib.parse import urlparse,urlunparse,parse_qsl,urlencode,urljoin
+from urllib.parse import urlparse,urlunparse,parse_qsl,urlencode,urljoin,unquote
 from urllib.robotparser import RobotFileParser
 
 KIND='ustspace-visible-snapshots'
+VERSION='2026.11.03.4-auto'
 CODE=re.compile(r'^[A-Z]{4}\d{4}[A-Z]?$')
 REDACT_EMAIL=re.compile(r'(?<![A-Z0-9._%+-])[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}',re.I)
 class AccessStop(Exception):pass
@@ -85,6 +86,85 @@ def visible_text(page,selector,code):
  if not page_has_code(raw,code):raise CourseUnavailable('Course page did not display the requested course code.')
  return clean_visible(raw)
 
+def matching_codes(text,allowed):
+ return {re.sub(r'[\s/-]','',m[0]).upper() for m in re.finditer(r'(?<![A-Z0-9])[A-Z]{4}[\s/-]*\d{4}[A-Z]?(?![A-Z0-9])',text,re.I)} & allowed
+
+def detected_course(page,allowed,selector):
+ # A catalog/search result is not a course-detail page. Prefer the observed
+ # course route; otherwise require one visible, non-link course heading on
+ # a detail route or in an open dialog. Ignore course codes in navigation.
+ if not official_url(page.url):return None
+ path=urlparse(page.url).path.rstrip('/')
+ route_codes=matching_codes(unquote(path),allowed)
+ if len(route_codes)>1:return None
+ headings=page.locator('h1, h2, [role="heading"]')
+ heading_codes=set()
+ for heading in headings.all():
+  if heading.is_visible() and not heading.locator('xpath=ancestor::a').count():
+   heading_codes.update(matching_codes(heading.inner_text(),allowed))
+ if route_codes:
+  code=next(iter(route_codes))
+  if heading_codes and code not in heading_codes:return None
+ elif len(heading_codes)==1 and (path not in ('','/review') or page.get_by_role('dialog').count()):
+  code=next(iter(heading_codes))
+ else:return None
+ check_access(page)
+ text=visible_text(page,selector,code)
+ # Wait for the detail content rather than accepting only a loading heading.
+ if not re.sub(re.escape(code[:4])+r'[\s/-]*'+re.escape(code[4:]),'',text,flags=re.I).strip():return None
+ return code
+
+def wait_for_course(context,codes,args,poll_ms=500,settle_ms=1000):
+ from playwright.sync_api import Error as BrowserError
+ allowed=set(codes);candidate=None;since=0
+ print('AUTO: Log in, then open ANY course from the supplied list. No terminal input is needed.',flush=True)
+ while True:
+  pages=[page for page in context.pages if not page.is_closed()]
+  if not pages:raise AccessStop('Browser was closed before the course test completed.')
+  found=None
+  for page in reversed(pages):
+   try:
+    code=detected_course(page,allowed,args.content_selector)
+    if code:found=(page,code,page.url);break
+   except (BrowserError,AccessStop):
+    # Login redirects, loading pages and challenges are expected while the
+    # owner signs in. Collection has not started yet; leave the browser alone.
+    continue
+  if found!=candidate:candidate=found;since=time.monotonic()
+  if candidate and (time.monotonic()-since)*1000>=settle_ms:
+   page,code,_=candidate
+   print(f'TEST: Detected {code}; checking visible course content.',flush=True)
+   return page,code
+  try:pages[-1].wait_for_timeout(poll_ms)
+  except BrowserError:pass
+
+def read_robots(context):
+ robots=RobotFileParser();response=context.request.get('https://ust.space/robots.txt',timeout=20000)
+ if response.status==200:robots.parse(response.text().splitlines())
+ elif response.status==404:robots.parse([])
+ else:raise AccessStop(f'Cannot establish robots policy (HTTP {response.status}); automatic collection stopped.')
+ return robots
+
+def start_collection(context,all_codes,codes,args,rows,excluded,output):
+ page,anchor=wait_for_course(context,all_codes,args)
+ def observe(response):
+  if official_url(response.url) and response.status in (401,403,429) and response.request.resource_type in ('document','xhr','fetch'):
+   page._collector_blocked_status=response.status
+ page.on('response',observe)
+ robots=read_robots(context)
+ if not robots.can_fetch('CoursePilotResearchSnapshot',page.url):raise AccessStop('robots.txt disallows the selected course; collection stopped.')
+ template=args.url_template or (None if args.manual else derive_template(page.url,anchor))
+ if template and not ('{course}' in template or '{subject}' in template and '{number}' in template):raise ValueError('URL template must contain {course}, or both {subject} and {number}.')
+ record=collect_current(page,anchor,args)
+ if anchor in codes:
+  rows[:]=[r for r in rows if r['courseCode']!=anchor];rows.append(record)
+  save(output,rows,excluded,None)
+ remaining=[code for code in codes if code!=anchor]
+ print(f'TEST PASS: {anchor} visible content read. AUTO: {len(remaining)} remaining course(s); starting now.',flush=True)
+ if not template and not args.manual:print('AUTO: Using visible course search and links; no route template was inferred.',flush=True)
+ if remaining:time.sleep(args.delay)
+ collect_courses(page,remaining,None,args,template,robots,rows,excluded,output)
+
 def next_control(page,pattern):
  for role in ['button','link']:
   loc=page.get_by_role(role,name=pattern)
@@ -155,7 +235,7 @@ def collect_courses(page,codes,anchor,args,template,robots,rows,excluded,output)
   if not robots.can_fetch('CoursePilotResearchSnapshot',page.url if code==anchor else render_template(template,code) if template else 'https://ust.space/review'):
    raise AccessStop('robots.txt disallows the requested path; collection stopped.')
   try:
-   if code!=anchor:navigate_course(page,code,args,template)
+   if index or code!=anchor:navigate_course(page,code,args,template)
    if not robots.can_fetch('CoursePilotResearchSnapshot',page.url):raise AccessStop('robots.txt disallows the observed course path; collection stopped.')
    record=collect_current(page,code,args);rows[:]=[r for r in rows if r['courseCode']!=code];rows.append(record)
    print(code+': captured visible page evidence (not a verified review count).',flush=True)
@@ -222,12 +302,13 @@ def main():
  output=Path(args.output).resolve();stopped=None
  try:rows=resume_rows(output,set(codes)) if args.resume else []
  except (ValueError,OSError) as e:ap.error(str(e))
- anchor=codes[0];total=len(codes);codes=pending_codes(codes,rows,args.retry_unavailable)
+ all_codes=list(codes);total=len(codes);codes=pending_codes(codes,rows,args.retry_unavailable)
  if args.limit:codes=codes[:args.limit]
  if output.exists():
   backup=output.with_name(output.stem+'.backup-'+datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%S%fZ')+output.suffix)
   shutil.copy2(output,backup);print('Previous output copied to '+backup.name,flush=True)
  print(f'{total} courses; {len(codes)} pending; {len(rows)} previous record(s) retained.',flush=True)
+ print('CoursePilot collector '+VERSION,flush=True)
  if not codes:print('No pending courses. Existing output retained.');return 0
  print('Only collect pages your account may normally access, in accordance with the site rules. This tool does not bypass access controls.',flush=True)
  from playwright.sync_api import sync_playwright
@@ -238,22 +319,7 @@ def main():
   page=context.pages[0] if context.pages else context.new_page()
   try:
    page.goto('https://ust.space/review',wait_until='domcontentloaded',timeout=45000)
-   print('\nIn the opened browser, log in yourself. Do not paste credentials into this terminal or chat.',flush=True)
-   input(f'Open the actual review-detail page for {anchor}, then press Enter here: ')
-   check_access(page);visible_text(page,args.content_selector,anchor)
-   def observe(response):
-    if official_url(response.url) and response.status in (401,403,429) and response.request.resource_type in ('document','xhr','fetch'):
-     page._collector_blocked_status=response.status
-   page.on('response',observe)
-   # Read robots through the same normal browser context, without exporting auth.
-   robots=RobotFileParser();response=context.request.get('https://ust.space/robots.txt',timeout=20000)
-   if response.status==200:robots.parse(response.text().splitlines())
-   elif response.status==404:robots.parse([])
-   else:raise AccessStop(f'Cannot establish robots policy (HTTP {response.status}); automatic collection stopped.')
-   template=args.url_template or (None if args.manual else derive_template(page.url,anchor))
-   if template and not ('{course}' in template or '{subject}' in template and '{number}' in template):raise ValueError('URL template must contain {course}, or both {subject} and {number}.')
-   if not template and not args.manual:print('No course route template was observed; subsequent courses will use visible search controls. If unavailable, use --manual.',flush=True)
-   collect_courses(page,codes,anchor,args,template,robots,rows,excluded,output)
+   start_collection(context,all_codes,codes,args,rows,excluded,output)
   except KeyboardInterrupt:stopped='Stopped by user.'
   except (AccessStop,CourseUnavailable,ValueError) as e:stopped=str(e);print('STOP: '+stopped,flush=True)
   except Exception as e:stopped='Setup/navigation failed: '+type(e).__name__;print('STOP: '+stopped,flush=True)
