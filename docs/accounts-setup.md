@@ -11,11 +11,10 @@ Open [the Supabase dashboard](https://supabase.com/dashboard), choose **New
 project**, and create a project such as `coursepilot`. Choose a region close to
 the intended users, such as Singapore. Keep the database password private.
 
-Once the project is ready, find its **Project URL** and **Publishable key** in
-the project's connection/API settings. These are the two public values needed
-to connect the website. The publishable key is intended to be included in a
-browser application; row-level security and each user's access token control
-private data access.
+The supplied project's **Project URL** and **Publishable key** are recorded in
+`.env.production` for reproducible builds. The publishable key is intended to
+be included in a browser application; row-level security and each user's
+access token control private data access.
 
 Share only the Project URL and publishable key with the person configuring the
 site. Do not send a database password, SMTP password, secret key, access token,
@@ -90,8 +89,10 @@ enabled without working delivery will prevent new users from signing in.
 
 ## 5. Configure and build the website
 
-Copy [`.env.example`](../.env.example) to an ignored `.env.local` file in the
-repository root, then replace both placeholders:
+The supplied public project URL and publishable key are already in
+`.env.production`. If you change projects, copy [`.env.example`](../.env.example)
+to an ignored `.env.local` file in the repository root and replace both
+placeholders:
 
 ```dotenv
 VITE_SUPABASE_URL=https://YOUR_PROJECT_REF.supabase.co
