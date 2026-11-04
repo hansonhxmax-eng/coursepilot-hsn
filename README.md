@@ -1,10 +1,12 @@
 # CoursePilot
 
-A working HKUST course-planning prototype based on the AISC Group 12 proposal. The default workspace now uses the team’s real 2026–27 Fall PDF schedule snapshots; the preference demo remains explicitly synthetic. React + Vite; no API key, backend account, or database required.
+A working HKUST course-planning prototype based on the AISC Group 12 proposal. The default workspace uses the team’s real 2026–27 Fall schedule data; the preference demo remains explicitly synthetic. React + Vite with Supabase email accounts and per-user saved workspaces.
 
 ## Run
 
 Use Node.js 24 (tested: 24.22.1) and npm 11.
+
+Create a Supabase project, run the private workspace migration, and configure the public project URL and publishable key before signing in. Follow [account setup](docs/accounts-setup.md). The current GitHub Pages release remains available while this integration awaits the project settings.
 
 ```sh
 cd /workspace/first-project
@@ -20,7 +22,7 @@ npm run build
 npm run preview -- --port 4173
 ```
 
-`dist/` is the self-contained static production site. Assets use relative paths, so it can be hosted at a root or a project subdirectory. Serve through HTTP rather than opening `index.html` as a local file.
+`dist/` is the static frontend and requires its configured Supabase project for accounts. Assets use relative paths, so it can be hosted at a root or a project subdirectory. Serve through HTTP rather than opening `index.html` as a local file.
 
 ## Real uploaded schedules (default workspace)
 
@@ -33,7 +35,7 @@ npm run preview -- --port 4173
 - Review summaries count discussion themes across the prepared comments, link to supporting quotations and give conditional selection/study advice. They do not establish current assessment rules.
 - The interface, generated summaries and advice use English. Student reviews and supporting quotations retain their original language. A content version refreshes cached course data after each dataset update.
 
-See [real-data validation and limitations](submission/real-data-validation.md), [current five reviewer scenarios](submission/reviewer-scenarios.md), and [the local collector guide](tools/ustspace/README.md). The owner supplied a completed 544-course collection; 172 courses contain captured data and 372 are unavailable. No login information is collected by the platform.
+See [real-data validation and limitations](submission/real-data-validation.md), [current five reviewer scenarios](submission/reviewer-scenarios.md), and [the local collector guide](tools/ustspace/README.md). The owner supplied a completed 544-course collection; 172 courses contain captured data and 372 are unavailable. CoursePilot account email and password are handled by Supabase; institutional login information is not collected.
 
 ## Preference demonstration (synthetic mode)
 
@@ -44,7 +46,7 @@ See [real-data validation and limitations](submission/real-data-validation.md), 
 - Exhaustive conflict-free combinations with three distinct ranked alternatives; no silent relaxation on impossible requests.
 - A/B/C timetables, course detail panels, sample workload and availability trade-offs, watchlist and an exclusion matrix.
 - Limited English/Chinese phrase parsing and five guaranteed supported presets. Review mapped controls before generating; this is not an LLM interface.
-- Catalog search, domain filters, local preference/watchlist persistence, explicit simulated seat updates and session action logs.
+- Catalog search, domain filters, per-account preference/watchlist persistence, explicit simulated seat updates and session action logs.
 - .ics export: illustrative 12-week schedules starting Monday 1 February 2027, Hong Kong time. These are not official academic dates.
 - Responsive navigation, keyboard-operable controls, modal Escape/focus containment.
 
@@ -55,7 +57,7 @@ See [real-data validation and limitations](submission/real-data-validation.md), 
 
 The **Official sources** page and course details provide safe new-tab entry links and the SIS path. No institutional password is collected, login state is not inspected, and opening an external page is never presented as an authenticated connection. Codes in the synthetic preference demonstration may not correspond to actual offerings: verify official details independently.
 
-There is no hosted live scraper, institutional integration, trained NLP model, grade prediction, external notification delivery, background monitor, or automatic enrollment. The separately downloaded local collector reads permitted visible pages only after the owner logs in on their own computer; its real-site compatibility has not yet been verified. Seat updates and logs reset on reload; preferences and watched IDs persist only in the same browser. Course selections remain local. The prepared anonymous reviews are static site assets; raw collection exports and reviewer handles are not included. Static app assets are served by GitHub Pages; uploaded PDFs are excluded. Third-party sites receive normal browser requests when explicitly opened. Scores in the synthetic preference demonstration are sample fixtures. Real course detail ratings and comments use the supplied USTSpace collection.
+There is no hosted live scraper, institutional integration, trained NLP model, grade prediction, external notification delivery, background monitor, or automatic enrollment. The separately downloaded local collector reads permitted visible pages only after the owner logs in on their own computer; its real-site compatibility has not yet been verified. Demo seat updates and activity logs reset on reload. Course selections, planner preferences and watched IDs are saved to each signed-in account. The prepared anonymous reviews are static site assets; raw collection exports and reviewer handles are not included. Static app assets are served by GitHub Pages; uploaded PDFs are excluded. Third-party sites receive normal browser requests when explicitly opened. Scores in the synthetic preference demonstration are sample fixtures. Real course detail ratings and comments use the supplied USTSpace collection.
 
 ## Synthetic-mode ranking
 
@@ -71,7 +73,7 @@ Balanced scoring = rating/5 × 50 + (4 − weekly workload) × 10 + availability
 - [Raw unit-test evidence](submission/evidence/unit-results.txt)
 - [Raw browser-test evidence](submission/evidence/browser-results.txt)
 
-Current review-integration validation: 39 JavaScript tests, 21 Python tests, 7 review browser checks, 16 real-workspace checks and 20 synthetic-mode checks passed. See the validation document for the precise scope. No authenticated USTSpace collection or full-review-window uptime is claimed.
+Account integration validation uses 45 JavaScript tests, 10 account browser checks with a local Supabase transport fixture, 7 review checks and 16 real-workspace checks. The local fixture verifies frontend isolation, not production email delivery or database policies; complete the real-project checks in [account setup](docs/accounts-setup.md) before publication.
 
 Optional browser suite (Python 3.12; Playwright must be installed separately):
 

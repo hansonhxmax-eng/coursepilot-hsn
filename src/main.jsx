@@ -42,16 +42,11 @@ import {
 import { plan, reasons, score, timeLabel, parseQuery } from "./engine";
 import "./style.css";
 import ScheduleWorkspace from "./schedules/ScheduleWorkspace";
+import AccountRoot, { AccountPanel, useAccount } from "./auth/AccountRoot";
 const COLORS = ["sage", "lavender", "peach", "blue"];
-function readSaved() {
-  try {
-    return JSON.parse(localStorage.getItem("coursepilot:v1") || "{}");
-  } catch {
-    return {};
-  }
-}
 function App() {
-  const saved = useMemo(readSaved, []);
+  const { initialWorkspace, saveSection } = useAccount();
+  const saved = initialWorkspace.demo;
   const [prefs, setPrefs] = useState({ ...DEFAULT, ...saved.prefs });
   const [applied, setApplied] = useState({ ...DEFAULT, ...saved.prefs });
   const [data, setData] = useState(initialCourses);
@@ -64,7 +59,7 @@ function App() {
   const [detail, setDetail] = useState(null);
   const [about, setAbout] = useState(false);
   const [watched, setWatched] = useState(
-    saved.watched || ["HUMA1002", "SCIE1002"],
+    saved.watched,
   );
   const [logs, setLogs] = useState([
     {
@@ -76,6 +71,7 @@ function App() {
   const [notifications, setNotifications] = useState([]);
   const [toast, setToast] = useState("");
   const [mobile, setMobile] = useState(false);
+  useEffect(() => { saveSection("demo", { prefs, watched }); }, [prefs, watched, saveSection]);
   const result = useMemo(() => plan(data, applied), [data, applied]);
   const active = result.plans[Math.min(selected, result.plans.length - 1)];
   const dirty = JSON.stringify(prefs) !== JSON.stringify(applied);
@@ -96,24 +92,11 @@ function App() {
       ].slice(0, 60),
     );
   }
-  function persist(p, w) {
-    try {
-      localStorage.setItem(
-        "coursepilot:v1",
-        JSON.stringify({ prefs: p, watched: w }),
-      );
-    } catch {
-      notify(
-        "Browser storage unavailable. Your changes are kept for this session.",
-      );
-    }
-  }
   function generate(p = prefs) {
     setApplied({ ...p });
     setPrefs({ ...p });
     setSelected(0);
     const r = plan(data, p);
-    persist(p, watched);
     addLog(
       `Planner checked ${data.length} records: ${r.eligible} eligible, ${r.total} conflict-free combinations; returned ${r.plans.length} plans. Hard constraints were not relaxed.`,
     );
@@ -150,7 +133,6 @@ function App() {
       ? watched.filter((x) => x !== id)
       : [...watched, id];
     setWatched(next);
-    persist(applied, next);
     notify(
       next.includes(id)
         ? "Course added to your watchlist."
@@ -327,14 +309,7 @@ function App() {
             <CircleHelp size={17} /> About this prototype{" "}
             <ArrowUpRight size={14} />
           </button>
-          <div className="profile">
-            <span className="avatar">Y</span>
-            <div>
-              <strong>Your workspace</strong>
-              <small>Student · local session</small>
-            </div>
-            <span className="status-dot" />
-          </div>
+          <AccountPanel />
         </div>
       </aside>
       {mobile && (
@@ -690,7 +665,7 @@ function App() {
                     </button>
                     <p className="private-note">
                       <ShieldCheck size={12} />
-                      Preferences stay in this browser
+                      Preferences are saved to your account
                     </p>
                   </div>
                 </section>
@@ -981,9 +956,9 @@ function App() {
                   <strong>Your accounts stay yours.</strong>
                   <p>
                     Sign in or create an account on the official websites.
-                    CoursePilot does not ask for your password, inspect your
-                    login session, or claim to sync protected data. Opening a
-                    website does not connect it to this prototype.
+                    CoursePilot does not ask for your HKUST or USTSpace passwords,
+                    inspect those login sessions, or claim to sync their protected
+                    data. Opening an official website does not connect it to CoursePilot.
                   </p>
                 </div>
                 <span className="connection-state">
@@ -1571,7 +1546,7 @@ function App() {
             <h3>What is real here?</h3>
             <p>
               The constraint solver, course search, timetable generation,
-              calendar export, watchlist, browser storage, and action logs work.
+              calendar export, account-saved course choices and watchlists, and session activity logs work.
               The Real schedules workspace includes 2026–27 Fall course details
               and anonymous student reviews. The separate
               preference demo uses 30 synthetic records, names, ratings and
@@ -1609,8 +1584,8 @@ function App() {
               ))}
             </div>
             <p className="source-note">
-              Your preferences and watched course IDs are stored in this
-              browser. Demo seat updates and logs last for this session.
+              Your course choices, preferences and watched courses are saved
+              to your account. Demo seat updates and logs last for this session.
               Calendar dates are illustrative. Always confirm official details
               in SIS.
             </p>
@@ -1693,4 +1668,4 @@ function CourseRow({ c, color, p, onOpen, watched, onWatch }) {
     </article>
   );
 }
-createRoot(document.getElementById("root")).render(<App />);
+createRoot(document.getElementById("root")).render(<AccountRoot><App /></AccountRoot>);

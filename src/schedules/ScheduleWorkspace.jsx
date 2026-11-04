@@ -33,20 +33,9 @@ import "./schedules.css";
 import reviewCatalog from "../reviews/catalog.json";
 import CourseReviews from "../reviews/CourseReviews";
 import { updatedLabel } from "../reviews/model";
+import { useAccount } from "../auth/AccountRoot";
 const displayIssue = (text) => text.replace(/OCR /gi, "").replace(/PDF/gi, "course").replace(/snapshot/gi, "record");
 const PALETTE = ["sage", "lavender", "peach", "blue"];
-function safeBasket() {
-  try {
-    const p = JSON.parse(
-      localStorage.getItem("coursepilot:schedules:v1") || "[]",
-    );
-    return Array.isArray(p)
-      ? p.filter((x) => snapshot.courses.some((c) => c.id === x)).slice(0, 6)
-      : [];
-  } catch {
-    return [];
-  }
-}
 function saveFile(content, name, type) {
   const u = URL.createObjectURL(new Blob([content], { type })),
     a = document.createElement("a");
@@ -68,18 +57,20 @@ function sessionText(s) {
   return `${WEEK[s.day]} ${timeLabel(s.start)}–${timeLabel(s.end)}${s.dateStart ? ` (${s.dateStart} → ${s.dateEnd})` : ""}`;
 }
 export default function ScheduleWorkspace() {
+  const { initialWorkspace, saveSection } = useAccount();
+  const saved = initialWorkspace.schedules;
   const [search, setSearch] = useState(""),
     [department, setDepartment] = useState("all"),
     [ccOnly, setCcOnly] = useState(false),
     [page, setPage] = useState(1);
-  const [selected, setSelected] = useState(safeBasket),
-    [prefs, setPrefs] = useState({ ...REAL_DEFAULT }),
-    [locks, setLocks] = useState({}),
+  const [selected, setSelected] = useState(saved.selected),
+    [prefs, setPrefs] = useState(saved.prefs),
+    [locks, setLocks] = useState(saved.locks),
     [results, setResults] = useState(null),
     [activePlan, setActivePlan] = useState(0),
     [dirty, setDirty] = useState(false);
   const [detail, setDetail] = useState(null),
-    [week, setWeek] = useState("2026-11-02"),
+    [week, setWeek] = useState(saved.week),
     [message, setMessage] = useState("");
   const modalRef = useRef();
   const selectedCourses = selected.map((id) =>
@@ -105,17 +96,8 @@ export default function ScheduleWorkspace() {
     ),
     option = results?.plans[activePlan];
   useEffect(() => {
-    try {
-      localStorage.setItem(
-        "coursepilot:schedules:v1",
-        JSON.stringify(selected),
-      );
-    } catch {
-      setMessage(
-        "Browser storage unavailable; your course selection stays in this session.",
-      );
-    }
-  }, [selected]);
+    saveSection("schedules", { selected, prefs, locks, week });
+  }, [selected, prefs, locks, week, saveSection]);
   useEffect(() => {
     setPage(1);
   }, [search, department, ccOnly]);

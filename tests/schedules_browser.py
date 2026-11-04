@@ -2,6 +2,7 @@
 import os,json,re,zipfile,io
 from pathlib import Path
 from playwright.sync_api import sync_playwright,expect
+from auth_fixture import install_optional_auth_fixture, sign_in_if_fixture, wait_for_saved
 base=os.environ.get('BASE_URL','http://127.0.0.1:4173/')
 out=Path(os.environ.get('EVIDENCE_DIR','/tmp/coursepilot-real-evidence'));out.mkdir(parents=True,exist_ok=True)
 checks=[]
@@ -11,8 +12,10 @@ with sync_playwright() as p:
  if os.environ.get('CHROMIUM_PATH'):options['executable_path']=os.environ['CHROMIUM_PATH']
  if base.startswith('https://') and os.environ.get('HTTPS_PROXY'):options['proxy']={'server':os.environ['HTTPS_PROXY']}
  browser=p.chromium.launch(**options);context=browser.new_context(viewport={'width':1440,'height':1050},reduced_motion='reduce',accept_downloads=True)
+ fixture=install_optional_auth_fixture(context)
  page=context.new_page();errors=[];page.on('pageerror',lambda e:errors.append(str(e)))
  page.goto(base,wait_until='networkidle')
+ sign_in_if_fixture(page,fixture)
  expect(page.locator('h1')).to_contain_text('Your real courses')
  expect(page.locator('.snapshot-note')).to_contain_text('2026–27 Fall')
  expect(page.locator('.real-stats')).to_contain_text('544')
@@ -98,6 +101,7 @@ with sync_playwright() as p:
  page.get_by_role('button',name='Preference demo',exact=True).click();expect(page.locator('.demo-banner')).to_contain_text('synthetic')
  page.get_by_role('button',name='Real schedules',exact=True).click()
  expect(page.locator('#real-reviews')).to_contain_text('14,740')
+ if fixture:wait_for_saved(page)
  page.reload();expect(page.locator('.real-basket')).to_contain_text('ACCT 2010')
  passed('Built-in reviews survive reload; course selection and separate synthetic mode continue to work')
  page.get_by_role('button',name='Try a real schedule').click()

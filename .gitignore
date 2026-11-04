@@ -8,3 +8,6 @@ ustspace-*-snapshots.json
 ustspace-snapshots.json
 __pycache__/
 .venv/
+.env
+.env.*
+!.env.example

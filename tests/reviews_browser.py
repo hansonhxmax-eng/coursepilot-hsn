@@ -2,6 +2,7 @@
 import json,os,re
 from pathlib import Path
 from playwright.sync_api import sync_playwright,expect
+from auth_fixture import install_optional_auth_fixture, sign_in_if_fixture, wait_for_saved
 
 base=os.environ.get('BASE_URL','http://127.0.0.1:4173/')
 out=Path(os.environ.get('EVIDENCE_DIR','/tmp/coursepilot-review-evidence'));out.mkdir(parents=True,exist_ok=True)
@@ -13,10 +14,12 @@ with sync_playwright() as p:
  if base.startswith('https://') and os.environ.get('HTTPS_PROXY'):options['proxy']={'server':os.environ['HTTPS_PROXY']}
  browser=p.chromium.launch(**options)
  context=browser.new_context(viewport={'width':1440,'height':1000},reduced_motion='reduce')
+ fixture=install_optional_auth_fixture(context)
  page=context.new_page();errors=[];requests=[]
  page.on('pageerror',lambda e:errors.append(str(e)))
  page.on('request',lambda r:requests.append(r.url))
  page.goto(base,wait_until='networkidle')
+ sign_in_if_fixture(page,fixture)
  assert not any('/reviews/' in url for url in requests)
  assert not re.search(r'\bOCR\b|PDF snapshot|review snapshot',page.locator('body').inner_text(),re.I)
  expect(page.locator('.course-data-footer')).to_contain_text('22:30')

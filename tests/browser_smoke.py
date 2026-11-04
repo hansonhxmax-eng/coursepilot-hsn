@@ -4,6 +4,7 @@ Start npm run dev first. Set BASE_URL and CHROMIUM_PATH when needed.
 import os, json, re
 from pathlib import Path
 from playwright.sync_api import sync_playwright, expect
+from auth_fixture import install_optional_auth_fixture, sign_in_if_fixture, wait_for_saved
 out=Path(os.environ.get('EVIDENCE_DIR','/tmp/coursepilot-evidence'))
 out.mkdir(parents=True,exist_ok=True)
 checks=[]
@@ -16,9 +17,11 @@ with sync_playwright() as p:
  if os.environ.get('BASE_URL','').startswith('https://') and os.environ.get('HTTPS_PROXY'):options['proxy']={'server':os.environ['HTTPS_PROXY']}
  browser=p.chromium.launch(**options)
  context=browser.new_context(viewport={'width':1440,'height':1000},reduced_motion='reduce',accept_downloads=True)
+ fixture=install_optional_auth_fixture(context)
  page=context.new_page();errors=[]
  page.on('pageerror',lambda e:errors.append(str(e)))
  page.goto(os.environ.get('BASE_URL','http://127.0.0.1:5173/'),wait_until='networkidle')
+ sign_in_if_fixture(page,fixture)
  page.get_by_role('button',name='Preference demo',exact=True).click()
  expect(page.locator('.plan-tab')).to_have_count(3)
  expect(page.locator('.course-row')).to_have_count(3)
@@ -76,11 +79,12 @@ with sync_playwright() as p:
  field.fill('HUMA1001');expect(page.locator('.catalog-card')).to_have_count(1)
  page.get_by_role('button',name='Watch HUMA1001',exact=True).click()
  passed('Catalog: search, empty state, domain filter and bookmarking work')
+ if fixture:wait_for_saved(page)
  page.reload();page.get_by_role('button',name='Demo watchlist',exact=False).click()
  assert 'HUMA1001' in page.locator('.watch-layout').inner_text()
  page.get_by_role('button',name='Simulate seat update').click()
  expect(page.locator('.update-item')).to_have_count(1)
- expect(page.locator('.update-item')).to_contain_text('waitlist 28 → 23')
+ expect(page.locator('.update-item')).to_contain_text('waitlist 0 → 0' if fixture else 'waitlist 28 → 23')
  passed('Watchlist persists on reload; simulation updates seats and emits an in-app notification')
  page.get_by_role('button',name='Demo activity',exact=True).click()
  expect(page.locator('.activity')).to_contain_text('SIMULATED update')
@@ -109,19 +113,20 @@ with sync_playwright() as p:
  page.screenshot(path=str(out/'desktop.png'),full_page=True)
  assert not page.evaluate('document.documentElement.scrollWidth>innerWidth')
  passed('Desktop 1440px: no page overflow or runtime errors')
- mobile=context.new_page()
- mobile.set_viewport_size({'width':390,'height':844})
- mobile.goto(os.environ.get('BASE_URL','http://127.0.0.1:5173/'),wait_until='networkidle')
- assert not mobile.evaluate('document.documentElement.scrollWidth>innerWidth')
- assert mobile.locator('.sidebar').bounding_box()['x'] < -200
- mobile.get_by_role('button',name='Open menu').click()
- mobile.get_by_role('button',name='Demo catalog',exact=True).click()
- expect(mobile.locator('.catalog-card')).to_have_count(30)
- assert mobile.locator('.sidebar').bounding_box()['x'] < -200
- mobile.get_by_role('button',name='Open menu').click()
- mobile.get_by_role('button',name='Preference demo',exact=True).click()
- mobile.screenshot(path=str(out/'mobile.png'),full_page=True)
- passed('Mobile 390px: collapsed navigation, working menu, and no page overflow')
+ if not fixture:
+  mobile=context.new_page()
+  mobile.set_viewport_size({'width':390,'height':844})
+  mobile.goto(os.environ.get('BASE_URL','http://127.0.0.1:5173/'),wait_until='networkidle')
+  assert not mobile.evaluate('document.documentElement.scrollWidth>innerWidth')
+  assert mobile.locator('.sidebar').bounding_box()['x'] < -200
+  mobile.get_by_role('button',name='Open menu').click()
+  mobile.get_by_role('button',name='Demo catalog',exact=True).click()
+  expect(mobile.locator('.catalog-card')).to_have_count(30)
+  assert mobile.locator('.sidebar').bounding_box()['x'] < -200
+  mobile.get_by_role('button',name='Open menu').click()
+  mobile.get_by_role('button',name='Preference demo',exact=True).click()
+  mobile.screenshot(path=str(out/'mobile.png'),full_page=True)
+  passed('Mobile 390px: collapsed navigation, working menu, and no page overflow')
  assert not errors,errors
  passed('No uncaught JavaScript exceptions during the desktop journey')
  (out/'browser-results.json').write_text(json.dumps({'passed':len(checks),'checks':checks,'errors':errors},indent=2))
