@@ -1,9 +1,11 @@
 # Configure real CoursePilot accounts
 
-GitHub Pages serves the website. Supabase provides email/password authentication
-and private saved workspaces. This repository supplies the integration and SQL;
-it does not create a Supabase project, configure email delivery, or prove that a
-production project is ready.
+GitHub Pages serves the account-enabled website. Supabase provides email/password
+authentication and private saved workspaces. This repository supplies the
+integration and SQL. The site owner configured the project, private table,
+email redirects and mail service before release. Live browser checks confirmed
+the account pages load; actual mailbox delivery and cross-user database access
+still need to be exercised with real test accounts.
 
 ## 1. Create the project
 
@@ -104,9 +106,8 @@ site requires a new build; editing environment variables alone does not change
 the existing `gh-pages` files.
 
 Run the application checks and `npm run build`, then publish `dist/` using the
-[existing GitHub Pages procedure](../submission/deployment.md). Do not replace
-the working public site with an unconfigured login gate. Keep the current site
-available until the backend, email delivery and configured build are verified.
+[existing GitHub Pages procedure](../submission/deployment.md). Before any future
+project change, verify the backend and email delivery against a configured build.
 
 To run browser tests without a live Supabase project, build a separate local
 fixture bundle and serve it at `http://127.0.0.1:4174/`:

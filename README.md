@@ -6,7 +6,7 @@ A working HKUST course-planning prototype based on the AISC Group 12 proposal. T
 
 Use Node.js 24 (tested: 24.22.1) and npm 11.
 
-Create a Supabase project, run the private workspace migration, and configure the public project URL and publishable key before signing in. Follow [account setup](docs/accounts-setup.md). The current GitHub Pages release remains available while this integration awaits the project settings.
+The account-enabled website is live on GitHub Pages. Its public Supabase project settings are included in `.env.production`. Follow [account setup](docs/accounts-setup.md) for database, redirect and email settings when changing projects.
 
 ```sh
 cd /workspace/first-project
@@ -73,7 +73,7 @@ Balanced scoring = rating/5 × 50 + (4 − weekly workload) × 10 + availability
 - [Raw unit-test evidence](submission/evidence/unit-results.txt)
 - [Raw browser-test evidence](submission/evidence/browser-results.txt)
 
-Account integration validation uses 45 JavaScript tests, 10 account browser checks with a local Supabase transport fixture, 7 review checks and 16 real-workspace checks. The local fixture verifies frontend isolation, not production email delivery or database policies; complete the real-project checks in [account setup](docs/accounts-setup.md) before publication.
+Account integration validation uses 45 JavaScript tests, 10 account browser checks with a local Supabase transport fixture, 7 review checks and 16 real-workspace checks. The live project has the private table, rejects anonymous table reads and serves the login, signup and recovery pages without browser errors. The local fixture verifies frontend isolation; real mailbox delivery and two authenticated users' database policies have not been tested end to end.
 
 Optional browser suite (Python 3.12; Playwright must be installed separately):
 
