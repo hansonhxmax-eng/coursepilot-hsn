@@ -49,14 +49,14 @@ Keep email confirmation enabled. Set the minimum password length to at least
 In **Authentication → URL Configuration**, set **Site URL** to:
 
 ```text
-https://hansonhxmax-eng.github.io/first-project/
+https://hansonhxmax-eng.github.io/coursepilot-hsn/
 ```
 
 Add these exact production **Redirect URLs**:
 
 ```text
-https://hansonhxmax-eng.github.io/first-project/?auth=confirm
-https://hansonhxmax-eng.github.io/first-project/?auth=recovery
+https://hansonhxmax-eng.github.io/coursepilot-hsn/?auth=confirm
+https://hansonhxmax-eng.github.io/coursepilot-hsn/?auth=recovery
 ```
 
 When testing locally, also add the callback URLs for the port in use, for example:

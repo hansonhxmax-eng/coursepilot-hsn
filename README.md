@@ -90,7 +90,7 @@ Tests save screenshots, a downloaded calendar and results under `/tmp/coursepilo
 
 ## GitHub Pages deployment
 
-The team has authorized publishing to `hansonhxmax-eng/first-project`. Source lives on `main`; the compiled static site is published from `gh-pages`. See [activation instructions and validation status](submission/deployment.md). The public URL is `https://hansonhxmax-eng.github.io/first-project/`; Pages is enabled and the prior public version was functionally verified. Each new deployment must still pass a fresh public check. No automatic rebuild workflow is configured; republish `dist/` when changing source. Keep the site enabled for the full review window.
+The team has authorized publishing to `hansonhxmax-eng/coursepilot-hsn`. Source lives on `main`; the compiled static site is published from `gh-pages`. See [activation instructions and validation status](submission/deployment.md). The public URL is `https://hansonhxmax-eng.github.io/coursepilot-hsn/`; Pages is enabled and the prior public version was functionally verified. Each new deployment must still pass a fresh public check. No automatic rebuild workflow is configured; republish `dist/` when changing source. Keep the site enabled for the full review window.
 
 This checkout is already isolated in the cloud task; no additional Git worktree is needed. Dependencies/build files can be restored from the prepared environment, but running development/preview servers must be restarted in new tasks.
 

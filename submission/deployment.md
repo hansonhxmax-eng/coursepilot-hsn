@@ -1,6 +1,6 @@
 # GitHub Pages deployment
 
-Repository: https://github.com/hansonhxmax-eng/first-project
+Repository: https://github.com/hansonhxmax-eng/coursepilot-hsn
 
 - `main`: React source, tests, submission materials and dependency lockfile.
 - `gh-pages`: built static site, with `.nojekyll`; no installation needed on GitHub Pages.
@@ -14,7 +14,7 @@ In the repository, open **Settings → Pages**. Under **Build and deployment**:
 3. Wait for GitHub's Pages build/deployment to complete.
 4. Open the URL displayed by GitHub and test it in an incognito browser.
 
-The expected standard project address is `https://hansonhxmax-eng.github.io/first-project/`. Treat this as a candidate until deployment is enabled and the page is checked. The GitHub Pages settings link is https://github.com/hansonhxmax-eng/first-project/settings/pages.
+The project address is `https://hansonhxmax-eng.github.io/coursepilot-hsn/`. The GitHub Pages settings link is https://github.com/hansonhxmax-eng/coursepilot-hsn/settings/pages.
 
 Keep Pages enabled and the deployment/repository accessible throughout the full review window. Confirm that your GitHub plan supports Pages for the repository's visibility. This deployment does not automatically grant access to private institutional data.
 

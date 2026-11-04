@@ -1,6 +1,6 @@
 # Five reviewer scenarios — current version
 
-Demo: https://hansonhxmax-eng.github.io/first-project/
+Demo: https://hansonhxmax-eng.github.io/coursepilot-hsn/
 
 The default **Real schedules** workspace uses OCR transcriptions of 11 user-uploaded PDFs for **2026–27 Fall**. These are real schedule snapshots, not live SIS availability. Course codes, titles and times may contain OCR errors; source PDFs are linked for checking. The separate **Preference demo** page retains synthetic data for the preference-flow demonstration.
 
