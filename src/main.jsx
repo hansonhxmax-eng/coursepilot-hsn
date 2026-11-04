@@ -306,7 +306,7 @@ function App() {
         </div>
         <div className="sidebar-bottom">
           <button onClick={() => setAbout(true)}>
-            <CircleHelp size={17} /> About this prototype{" "}
+            <CircleHelp size={17} /> About CoursePilot{" "}
             <ArrowUpRight size={14} />
           </button>
           <AccountPanel />
@@ -1380,7 +1380,7 @@ function App() {
               coursepilot <span>·</span> Built for a little more balance.
             </span>
             <span>
-              AISC · Group 12 <span>✦</span> Prototype v1.0
+              Explore <span>✦</span> Compare <span>✦</span> Plan
             </span>
           </footer>
         </div>
@@ -1526,24 +1526,23 @@ function App() {
             <button
               autoFocus
               className="modal-close icon-btn"
-              aria-label="Close prototype information"
+              aria-label="Close CoursePilot information"
               onClick={() => setAbout(false)}
             >
               <X size={20} />
             </button>
-            <span className="eyebrow">AISC · GROUP 12</span>
+            <span className="eyebrow">ABOUT COURSEPILOT</span>
             <h2 id="about-title">
-              A thoughtful plan.
+              A clearer picture.
               <br />
-              An honest prototype.
+              A plan that fits.
             </h2>
             <p className="modal-intro">
-              CoursePilot turns your preferences into three ranked,
-              conflict-free Common Core plans. This prototype demonstrates
-              constraint-based planning, transparent scoring and simulated
-              waitlist monitoring.
+              Explore courses and student reviews, compare class times, and
+              save a timetable that works for you. The separate preference
+              planner lets you try ranked plans with example courses.
             </p>
-            <h3>What is real here?</h3>
+            <h3>About the course data</h3>
             <p>
               The constraint solver, course search, timetable generation,
               calendar export, account-saved course choices and watchlists, and session activity logs work.
