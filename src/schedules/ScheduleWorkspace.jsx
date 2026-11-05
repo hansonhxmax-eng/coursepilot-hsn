@@ -34,6 +34,7 @@ import reviewCatalog from "../reviews/catalog.json";
 import CourseReviews from "../reviews/CourseReviews";
 import { updatedLabel } from "../reviews/model";
 import { useAccount } from "../auth/AccountRoot";
+import { parsePreenrolledIcs, lockedMeetings, meetingsForWeek, meetingLabel } from "./preenroll";
 const displayIssue = (text) => text.replace(/OCR /gi, "").replace(/PDF/gi, "course").replace(/snapshot/gi, "record");
 const PALETTE = ["sage", "lavender", "peach", "blue"];
 function saveFile(content, name, type) {
@@ -66,12 +67,18 @@ export default function ScheduleWorkspace() {
   const [selected, setSelected] = useState(saved.selected),
     [prefs, setPrefs] = useState(saved.prefs),
     [locks, setLocks] = useState(saved.locks),
+    [preenrolled, setPreenrolled] = useState(saved.preenrolled),
     [results, setResults] = useState(null),
     [activePlan, setActivePlan] = useState(0),
     [dirty, setDirty] = useState(false);
   const [detail, setDetail] = useState(null),
     [week, setWeek] = useState(saved.week),
     [message, setMessage] = useState("");
+  const [importMessage, setImportMessage] = useState("");
+  const fixedCodes = new Set(preenrolled.map(row => row.code));
+  const fixedWeek = meetingsForWeek(preenrolled, week);
+  const preenrolledCourses = [...fixedCodes].sort();
+  const recurringMeetings = [...new Map(preenrolled.map(row => [row.code + meetingLabel(row) + row.room + row.instructor, row])).values()].slice(0, 24);
   const modalRef = useRef();
   const selectedCourses = selected.map((id) =>
     snapshot.courses.find((c) => c.id === id),
@@ -96,8 +103,8 @@ export default function ScheduleWorkspace() {
     ),
     option = results?.plans[activePlan];
   useEffect(() => {
-    saveSection("schedules", { selected, prefs, locks, week });
-  }, [selected, prefs, locks, week, saveSection]);
+    saveSection("schedules", { selected, prefs, locks, week, preenrolled });
+  }, [selected, prefs, locks, week, preenrolled, saveSection]);
   useEffect(() => {
     setPage(1);
   }, [search, department, ccOnly]);
@@ -130,6 +137,7 @@ export default function ScheduleWorkspace() {
     };
   }, [detail]);
   function select(id) {
+    if (fixedCodes.has(id)) { setMessage("This course is locked by your imported pre-enrolment timetable."); return; }
     if (!selected.includes(id) && selected.length === 6) {
       setMessage(
         "Choose at most six courses to keep the section search bounded.",
@@ -146,7 +154,7 @@ export default function ScheduleWorkspace() {
     setDirty(true);
   }
   function build() {
-    const r = generateSchedules(selectedCourses, prefs, locks);
+    const r = generateSchedules(selectedCourses, prefs, locks, { preenrolled });
     setResults(r);
     setActivePlan(0);
     setDirty(false);
@@ -158,14 +166,17 @@ export default function ScheduleWorkspace() {
   }
   function example() {
     const ids = ["ACCT2010", "ISOM1380", "AISC1000B"];
+    const availableIds = ids.filter(id => !fixedCodes.has(id));
     const p = { ...REAL_DEFAULT, noEarly: true, maxDays: 4 };
-    setSelected(ids);
+    setSelected(availableIds);
     setPrefs(p);
     setLocks({});
     setResults(
       generateSchedules(
-        snapshot.courses.filter((c) => ids.includes(c.id)),
+        snapshot.courses.filter((c) => availableIds.includes(c.id)),
         p,
+        {},
+        { preenrolled },
       ),
     );
     setActivePlan(0);
@@ -189,9 +200,38 @@ export default function ScheduleWorkspace() {
     setLocks((l) => ({ ...l, [course]: { ...l[course], [kind]: id } }));
     setDirty(true);
   }
+  async function importPreenrolled(event) {
+    const file = event.target.files?.[0];
+    event.target.value = "";
+    if (!file) return;
+    if (!file.name.toLowerCase().endsWith(".ics") || file.size > 512000) {
+      setImportMessage("Choose a SIS .ics calendar file under 500 KB."); return;
+    }
+    if (preenrolled.length && !window.confirm("Replace your locked pre-enrolled timetable with this file?")) return;
+    try {
+      const parsed = parsePreenrolledIcs(await file.text());
+      setPreenrolled(parsed.meetings);
+      const importedCodes = new Set(parsed.meetings.map(row => row.code));
+      setSelected(ids => ids.filter(id => !importedCodes.has(id)));
+      setLocks(value => Object.fromEntries(Object.entries(value).filter(([id]) => !importedCodes.has(id))));
+      const first = lockedMeetings(parsed.meetings)[0];
+      if (first) {
+        const date = new Date(first.date + "T00:00:00Z");
+        date.setUTCDate(date.getUTCDate() - first.day);
+        setWeek(date.toISOString().slice(0, 10));
+      }
+      setResults(null); setDirty(true);
+      setImportMessage(`${parsed.courseCount} pre-enrolled ${parsed.courseCount === 1 ? "course" : "courses"}, ${parsed.meetings.length} class ${parsed.meetings.length === 1 ? "meeting" : "meetings"} locked in your account.${parsed.skipped ? ` ${parsed.skipped} unrelated or unreadable ${parsed.skipped === 1 ? "event" : "events"} skipped.` : ""}`);
+    } catch (error) { setImportMessage(error.message || "The calendar could not be imported."); }
+  }
+  function removePreenrolled() {
+    if (!window.confirm("Remove all locked pre-enrolled courses from your CoursePilot timetable? This will not change SIS.")) return;
+    setPreenrolled([]); setResults(null); setDirty(true);
+    setImportMessage("Imported pre-enrolment removed from CoursePilot. Your SIS record was not changed.");
+  }
   function exportWeek() {
     try {
-      const text = calendarSnapshot(option.items, week);
+      const text = calendarSnapshot(option.items, week, preenrolled);
       if (!text.includes("BEGIN:VEVENT")) {
         setMessage(
           "No meetings fall in this selected week. Choose another Monday.",
@@ -365,11 +405,12 @@ export default function ScheduleWorkspace() {
               <div className="real-course-bottom">
                 <button className="course-review-link" onClick={() => setDetail(c)} aria-label={`Read reviews for ${c.code}`}><MessageSquare size={14} />{reviewCatalog.courses[c.id] ? `${(reviewCatalog.courses[c.id].reviewCount || reviewCatalog.courses[c.id].ratingCount || 0).toLocaleString()} ${reviewCatalog.courses[c.id].reviewCount ? "reviews" : "ratings"}` : "No Review Published yet~"}</button>
                 <button
-                  aria-label={`${selected.includes(c.id) ? "Remove" : "Add"} ${c.code}`}
+                  aria-label={fixedCodes.has(c.id) ? `${c.code} is locked as pre-enrolled` : `${selected.includes(c.id) ? "Remove" : "Add"} ${c.code}`}
                   className={`real-add ${selected.includes(c.id) ? "is-added" : ""}`}
                   onClick={() => select(c.id)}
+                  disabled={fixedCodes.has(c.id)}
                 >
-                  {selected.includes(c.id) ? (
+                  {fixedCodes.has(c.id) || selected.includes(c.id) ? (
                     <Check size={15} />
                   ) : (
                     <Plus size={15} />
@@ -437,6 +478,25 @@ export default function ScheduleWorkspace() {
           </div>
           <Layers size={25} />
         </div>
+        <div className="preenroll-panel">
+          <div className="preenroll-intro">
+            <div>
+              <span className="eyebrow">YOUR FIXED CLASSES</span>
+              <h3>Import Pre-enrolled Courses</h3>
+              <p>In SIS, open your pre-enrolment timetable and download or export its calendar as an <strong>.ics file</strong>. Upload it here to add those classes to your personal timetable. CoursePilot locks them and plans other courses around their meeting times.</p>
+              <p className="preenroll-note">Your file is read in your browser, then the class details are saved to your account. Check the imported times, room and instructor against SIS. Removing them here does not change your SIS enrolment.</p>
+            </div>
+            <label className="preenroll-upload"><Upload size={17} />{preenrolled.length ? "Replace .ics file" : "Import .ics file"}<input type="file" accept=".ics,text/calendar" aria-label="Import pre-enrolled .ics file" onChange={importPreenrolled} /></label>
+          </div>
+          {importMessage && <p className="preenroll-message" role="status">{importMessage}</p>}
+          {preenrolled.length > 0 && <>
+            <div className="preenroll-status"><span className="preenroll-lock"><ShieldCheck size={16} /> Locked / Pre-enrolled</span><strong>{preenrolledCourses.length} {preenrolledCourses.length === 1 ? "course" : "courses"} · {preenrolled.length} {preenrolled.length === 1 ? "meeting" : "meetings"}</strong><button type="button" onClick={removePreenrolled}>Remove imported timetable</button></div>
+            <div className="preenroll-courses">{preenrolledCourses.map(code => <span key={code}>{code}</span>)}</div>
+            <label className="preenroll-week">View week starting Monday <input type="date" value={week} aria-label="Pre-enrolled week starting Monday" onChange={e => { const d = new Date(e.target.value + "T00:00:00Z"); if (Number.isFinite(d.getTime()) && d.getUTCDay() === 1) setWeek(e.target.value); else setImportMessage("Choose a Monday to view the timetable."); }} /></label>
+            <div className="preenroll-meetings">{(fixedWeek.length ? fixedWeek : recurringMeetings).map(row => <div key={row.id}><strong>{row.code}</strong><span>{meetingLabel(row)}{fixedWeek.length ? " · " + row.date : ""}</span><span>{row.room || "Room to confirm in SIS"}</span><span>{row.instructor || "Instructor to confirm in SIS"}</span><em>Locked</em></div>)}</div>
+            {!fixedWeek.length && <p className="preenroll-note">No imported meeting falls in this week. Showing the recurring class times; choose a teaching week to see dated meetings.</p>}
+          </>}
+        </div>
         <div className="real-basket">
           {selectedCourses.map((c) => (
             <span key={c.id}>
@@ -451,8 +511,7 @@ export default function ScheduleWorkspace() {
           ))}
           {!selected.length && (
             <p>
-              No courses selected yet. Add courses from the catalog, or try the
-              real example.
+              No courses selected yet. Add additional courses from the catalog, or try the real example. Imported pre-enrolled classes stay locked above.
             </p>
           )}
         </div>
@@ -679,6 +738,10 @@ export default function ScheduleWorkspace() {
                               style={{ top: `${((h - 8) / 15) * 100}%` }}
                             />
                           ))}
+                          {fixedWeek.filter(m => m.day === di).map(m => {
+                            const times = lockedMeetings([m])[0];
+                            return <div className="real-calendar-event preenrolled" key={m.id} style={{ top: `${((times.start - 480) / 900) * 100}%`, height: `${((times.end - times.start) / 900) * 100}%` }} title={`${m.code} · Locked / Pre-enrolled · ${meetingLabel(m)} · ${m.room || "Room to confirm in SIS"}`}><strong>{m.code} · Locked</strong><span>{meetingLabel(m)}</span></div>;
+                          })}
                           {option.items.flatMap((item, ci) => {
                             const seen = new Set();
                             return item.sections.flatMap((s) =>
@@ -792,8 +855,8 @@ export default function ScheduleWorkspace() {
               course requirements and enrollment in SIS.
             </p>
             <div className="real-modal-actions">
-              <button className="primary" onClick={() => select(detail.id)}>
-                {selected.includes(detail.id)
+              <button className="primary" onClick={() => select(detail.id)} disabled={fixedCodes.has(detail.id)}>
+                {fixedCodes.has(detail.id) ? "Locked / Pre-enrolled" : selected.includes(detail.id)
                   ? "Remove from selection"
                   : "Add to timetable"}
               </button>

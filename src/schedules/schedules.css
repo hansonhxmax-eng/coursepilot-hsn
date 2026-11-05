@@ -311,6 +311,27 @@
 .real-builder .real-heading > svg {
   color: #a5b69a;
 }
+.preenroll-panel { margin-top: 24px; padding: 22px; border: 1px solid #d6e3c8; border-radius: 8px; background: #f8fbf4; }
+.preenroll-intro, .preenroll-status { display: flex; justify-content: space-between; align-items: start; gap: 24px; }
+.preenroll-intro h3 { margin: 5px 0 10px; font-size: 21px; color: #34442f; }
+.preenroll-intro p { max-width: 780px; line-height: 1.65; margin: 0 0 9px; color: #485643; font-size: 15px; }
+.preenroll-note { color: #67745f !important; font-size: 14px !important; }
+.preenroll-upload { display: inline-flex; align-items: center; justify-content: center; gap: 8px; flex: 0 0 auto; padding: 12px 17px; border-radius: 5px; background: #436538; color: white; font-size: 15px; font-weight: 700; cursor: pointer; }
+.preenroll-upload input { position: absolute; width: 1px; height: 1px; opacity: 0; }
+.preenroll-upload:focus-within { outline: 3px solid #90b47e; outline-offset: 2px; }
+.preenroll-message { margin: 12px 0 0; color: #344b30; font-size: 15px; }
+.preenroll-status { margin-top: 18px; align-items: center; flex-wrap: wrap; }
+.preenroll-lock { display: inline-flex; align-items: center; gap: 6px; color: #3d6934; font-weight: 700; }
+.preenroll-status button { color: #705548; text-decoration: underline; font-size: 14px; }
+.preenroll-courses { display: flex; flex-wrap: wrap; gap: 7px; margin: 13px 0; }
+.preenroll-courses span { padding: 6px 9px; border-radius: 4px; background: #e1eedb; color: #35532d; font-size: 14px; font-weight: 700; }
+.preenroll-week { display: flex; align-items: center; gap: 12px; margin: 16px 0 10px; font-size: 14px; font-weight: 650; }
+.preenroll-week input { padding: 7px; border: 1px solid #c5d6bd; border-radius: 4px; font: inherit; }
+.preenroll-meetings { max-height: 290px; overflow: auto; border-top: 1px solid #dce8d4; }
+.preenroll-meetings > div { display: grid; grid-template-columns: 100px 215px minmax(120px,1fr) minmax(120px,1fr) 65px; gap: 12px; padding: 11px 4px; border-bottom: 1px solid #dce8d4; align-items: center; font-size: 14px; }
+.preenroll-meetings strong { color: #35532d; }
+.preenroll-meetings em { color: #3d6934; font-style: normal; font-weight: 700; }
+.real-add:disabled { opacity: .65; cursor: not-allowed; }
 .real-basket {
   display: flex;
   flex-wrap: wrap;
@@ -635,6 +656,7 @@
 .real-calendar-event.blue {
   border-color: #9ab7c0;
 }
+.real-calendar-event.preenrolled { background: #dfecd6; border-color: #3d6934; color: #2e4b2c; z-index: 1; }
 .real-plan-details {
   margin-top: 20px;
 }

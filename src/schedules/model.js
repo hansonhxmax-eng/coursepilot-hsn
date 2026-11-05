@@ -1,4 +1,5 @@
 export const WEEK = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+import { lockedMeetings } from "./preenroll.js";
 export const REAL_DEFAULT = {
   noEarly: false,
   days: [0, 1, 2, 3, 4, 5, 6],
@@ -116,6 +117,7 @@ export function generateSchedules(courses, prefs, locks = {}, settings = {}) {
   const started = performance.now();
   const maxStates = settings.maxStates ?? 200000;
   const maxMs = settings.maxMs ?? 1500;
+  const fixed = lockedMeetings(settings.preenrolled || []);
   if (!courses.length)
     return {
       plans: [],
@@ -132,10 +134,15 @@ export function generateSchedules(courses, prefs, locks = {}, settings = {}) {
       limited: false,
       elapsed: 0,
     };
-  const entries = courses.map((c) => ({
-    course: c,
-    ...courseOptions(c, prefs, locks[c.id]),
-  }));
+  const entries = courses.map((c) => {
+    const options = courseOptions(c, prefs, locks[c.id]);
+    const compatible = options.options.filter(sections => sections.every(section => section.sessions.every(session =>
+      !fixed.some(locked => session.day === locked.day && session.start < locked.end && locked.start < session.end &&
+        (!session.dateStart || locked.date >= session.dateStart) && (!session.dateEnd || locked.date <= session.dateEnd))
+    )));
+    return { course: c, ...options, options: compatible,
+      issues: options.options.length && !compatible.length ? ["Conflicts with a locked pre-enrolled class"] : options.issues };
+  });
   const issues = entries
     .filter((e) => !e.options.length)
     .flatMap((e) => e.issues.map((i) => `${e.course.code}: ${i}`));
@@ -164,7 +171,7 @@ export function generateSchedules(courses, prefs, locks = {}, settings = {}) {
     if (i === entries.length) {
       const sections = chosen.flatMap((x) => x.sections),
         days = [
-          ...new Set(sections.flatMap((s) => s.sessions.map((m) => m.day))),
+          ...new Set([...sections.flatMap((s) => s.sessions.map((m) => m.day)), ...fixed.map(m => m.day)]),
         ].sort();
       if (days.length > prefs.maxDays) return;
       feasible++;
@@ -197,6 +204,7 @@ export function generateSchedules(courses, prefs, locks = {}, settings = {}) {
           item.sections.flatMap((s) => s.sessions.map((m) => m.day)),
         ),
         ...sections.flatMap((s) => s.sessions.map((m) => m.day)),
+        ...fixed.map(m => m.day),
       ]);
       if (days.size > prefs.maxDays) continue;
       visit([...chosen, { course: entries[i].course, sections }], i + 1);
@@ -280,7 +288,7 @@ export function validateReviewImport(payload, knownCodes) {
   }
   return { records, skipped };
 }
-export function calendarSnapshot(items, weekStart) {
+export function calendarSnapshot(items, weekStart, preenrolled = []) {
   // Week start is selected by the student. No official term/holiday dates are invented.
   const day = new Date(weekStart + "T00:00:00Z");
   if (Number.isNaN(day.getTime()) || day.getUTCDay() !== 1)
@@ -334,6 +342,26 @@ export function calendarSnapshot(items, weekStart) {
         )
           events.push(event);
       }
+  for (const meeting of preenrolled) {
+    const startInstant = new Date(meeting.startsAt);
+    const endInstant = new Date(meeting.endsAt);
+    if (!Number.isFinite(startInstant.getTime()) || !Number.isFinite(endInstant.getTime())) continue;
+    const localStart = new Date(startInstant.getTime() + 8 * 3600000);
+    const localEnd = new Date(endInstant.getTime() + 8 * 3600000);
+    const date = localStart.toISOString().slice(0, 10);
+    if (date < weekStart || date >= new Date(day.getTime() + 7 * 86400000).toISOString().slice(0, 10)) continue;
+    events.push([
+      "BEGIN:VEVENT",
+      `UID:${esc(meeting.id)}@coursepilot.preenrolled`,
+      `DTSTAMP:${stamp(new Date())}Z`,
+      `DTSTART;TZID=Asia/Hong_Kong:${stamp(localStart)}`,
+      `DTEND;TZID=Asia/Hong_Kong:${stamp(localEnd)}`,
+      `SUMMARY:${esc(`${meeting.code} · Pre-enrolled`)}`,
+      `LOCATION:${esc(meeting.room || "")}`,
+      `DESCRIPTION:${esc(`Locked in CoursePilot. ${meeting.instructor || ""} Verify in SIS.`)}`,
+      "END:VEVENT",
+    ].join("\r\n"));
+  }
   return [
     "BEGIN:VCALENDAR",
     "VERSION:2.0",

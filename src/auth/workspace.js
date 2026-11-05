@@ -1,4 +1,5 @@
 const DEFAULT_WEEK = "2026-11-02";
+import { normalisePreenrolled } from "../schedules/preenroll.js";
 const DOMAINS = new Set(["A", "H", "S", "T", "SA", "SUS"]);
 const PRIORITIES = new Set(["balanced", "safe", "fit"]);
 const UNSAFE_KEYS = new Set(["__proto__", "prototype", "constructor"]);
@@ -50,7 +51,10 @@ function monday(value) {
 export function normalizeWorkspace(raw, { demoCourses = [], realCourses = [], demoDefaults = {}, realDefaults = {} } = {}) {
   const source = object(raw), demo = object(own(source, "demo")), schedules = object(own(source, "schedules"));
   const real = new Map(realCourses.filter(c => typeof c.id === "string" && !UNSAFE_KEYS.has(c.id)).map(c => [c.id, c]));
-  const selected = ids(own(schedules, "selected"), real, 6), rawLocks = object(own(schedules, "locks")), locks = {};
+  const preenrolled = normalisePreenrolled(own(schedules, "preenrolled"));
+  const fixedCodes = new Set(preenrolled.map(row => row.code));
+  const selected = ids(own(schedules, "selected"), real, 6).filter(id => !fixedCodes.has(id));
+  const rawLocks = object(own(schedules, "locks")), locks = {};
   for (const courseId of selected) {
     const values = object(own(rawLocks, courseId)), valid = {};
     for (const section of real.get(courseId).sections || []) {
@@ -70,6 +74,7 @@ export function normalizeWorkspace(raw, { demoCourses = [], realCourses = [], de
       prefs: preferences(own(schedules, "prefs"), realDefaults, false),
       locks,
       week: monday(own(schedules, "week")),
+      preenrolled,
     },
   };
 }
